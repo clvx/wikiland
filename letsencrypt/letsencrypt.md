@@ -52,12 +52,13 @@ $sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ~/server.key -
 ¿Características?
 
 Demos:
-    Instalar certificados para una web con Apache.
-    Instalar certificados para el tipo standalone.
-    Instalar certificados para el tipo manual.
+- Instalar certificados para una web con Apache.
+- Instalar certificados para el tipo standalone.
+- Instalar certificados para el tipo manual.
 
 Topologías:
-    Certificados para un apache en prod.
-    Certificados para un apache detrás de haproxy en prod.
-    Certificados para varios apaches en prod.
-    Certificados para varios apaches detrás de haproxy en prod.
+
+- Certificados para un apache en prod.
+- Certificados para un apache detrás de haproxy en prod.
+- Certificados para varios apaches en prod.
+- Certificados para varios apaches detrás de haproxy en prod.

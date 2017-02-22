@@ -73,3 +73,13 @@
     28. [upstart](lpi1/upstart)
 
     29. [vi-linux-editor](lpi1/vi-linux-editor)
+
+4. Postgres
+
+    1. [administration-security](postgres/administration-security)
+
+    2. [datatypes](postgres/datatypes)
+
+    3. [installation-configuration](postgres/installation-configuration)
+
+    4. [introduction](postgres/introduction)

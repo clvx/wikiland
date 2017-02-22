@@ -2,7 +2,7 @@
 
 1. [Letsencrypt](letsencrypt/letsencrypt)
 
-2. lfcsa
+2. LFCSA
 
     1. [Essential commands](lfcsa/essential-commands)
     
@@ -18,3 +18,58 @@
     
     7. [Virtualization](lfcsa/virtualization)
 
+3. LPI-1
+
+    1. [automating-system-tasks-with-cron-and-at](lpi1/automating-system-tasks-with-cron-and-at)
+
+    2. [bash-scripting-linux-automation](lpi1/bash-scripting-linux-automation)
+
+    3. [basic-linux-networking-topics](lpi1/basic-linux-networking-topics)
+
+    4. [booting](lpi1/booting)
+
+    5. [custom-bash-shell](lpi1/custom-bash-shell)
+
+    6. [debian-based-package-management](lpi1/debian-based-package-management)
+
+    9. [depth-user-group-management](lpi1/depth-user-group-management)
+
+    10. [filesystem-integrity-maintenance](lpi1/filesystem-integrity-maintenance)
+
+    11. [gpt-mbr](lpi1/gpt-mbr)
+
+    12. [host-security](lpi1/host-security)
+
+    13. [linux-accessibility](lpi1/linux-accessibility)
+
+    14. [linux-bash-shell](lpi1/linux-bash-shell)
+
+    15. [linux-date-time](lpi1/linux-date-time)
+
+    16. [linux-security-topics](lpi1/linux-security-topics)
+
+    17. [localization](lpi1/localization)
+
+    18. [managing-files](lpi1/managing-files)
+
+    19. [managing-library-processes](lpi1/managing-library-processes)
+
+    20. [managing-printing](lpi1/managing-printing)
+
+    21. [mounting-unmounting-of-filesystems](lpi1/mounting-unmounting-of-filesystems)
+
+    22. [mysql-sql-languange-basics](lpi1/mysql-sql-languange-basics)
+
+    23. [rpm-package-management](lpi1/rpm-package-management)
+
+    24. [ssh-and-secure-access](lpi1/ssh-and-secure-access)
+
+    25. [system-architecture-management](lpi1/system-architecture-management)
+
+    26. [systemd](lpi1/systemd)
+
+    27. [system-logging](lpi1/system-logging)
+
+    28. [upstart](lpi1/upstart)
+
+    29. [vi-linux-editor](lpi1/vi-linux-editor)

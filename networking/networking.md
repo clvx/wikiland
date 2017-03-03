@@ -223,93 +223,79 @@ si el enlace se mantiene encendido.
 todos los vecinos. Se crean cuando:
     * Se inicia el router o el proceso de enrutamiento.
     * Cuando hay un cambio en la topología.
+
 # OSPF
-• Distancia administrativa: 110
-• NO sumariza automáticamente las redes cercanas.
-5 tipos de paquetes:
-• Hello:
-Descubre
-vecinos
-y
-construye
-adyascencias.Utilizado para elegir al DR y BDR.
-• Contiene router ID.
-• Usualmente multicast(224.0.0.5).
-• Enviado cada 30 segundos para ambientes
-no broadcast.
-• Dead interval 4 veces el hello interval.
-• Database
-description(DBD):
-Verifica
-sincronización de la base de datos entre routers.
-• Link State Request: Peticiones especificar del
-estado enlace a otros routers.
-• Link State Update: Actualizaciones específicas de
-estado enlace. Contiene neighbors y path costs.
-• Link State Ack: Confirma los paquetes anteriores.
-Algoritmo OSPF:
+- Distancia administrativa: 110
+- NO sumariza automáticamente las redes cercanas.
+
+**5 tipos de paquetes**
+- Hello: Descubre vecinos y construye adyascencias. Utilizado para elegir al 
+DR y BDR.
+    * Contiene router ID.
+    * Usualmente multicast(224.0.0.5).
+    * Enviado cada 30 segundos para ambientes no broadcast.
+    * Dead interval 4 veces el hello interval.
+- Database description(DBD):  Verifica sincronización de la base de datos entre
+ routers.
+- Link State Request: Peticiones para especificar del estado enlace a otros routers.
+- Link State Update: Actualizaciones específicas de estado enlace. 
+Contiene neighbors y path costs.
+- Link State Ack: Confirma los paquetes anteriores.
+
+**Algoritmo OSPF**
 1. Construye la base de datos de estado enlace.
-2. Se ejecuta el algoritmo de Dijkstra sobre la base de
-datos de estado enlace.
+2. Se ejecuta el algoritmo de Dijkstra sobre la base de datos de estado enlace.
 3. Se crea el árbol del camino más corto.
-4. Se añaden las rutas más cortos a la tabla de
-enrutamiento.
-Métrica:
-• Es el valor acumulativo desde un router hasta la
-ruta destino incluyendola.
-• Costo: 10 8 /bandwidth(bps).
-Router ID: 3 criterios
-• Utiliza la IP configurada por el comando router-id.
-• Sino se utiliza la dirección loopback más alta. Las
-loopbacks siempre están prendidas.
-4.
-Sino se utiliza la dirección de interfaz más alta
-activa.
-Multiaccess Networks:
-• Inundación de LSA en la red en la relación n(n-
-1)/2.
-• Se elige el DR & BDR para gestionar los LSA. No
-se eligen en ambientes punto a punto.
-• 224.0.0.6 para enviar al DR & BDR .
-• 224.0.0.5 para enviar a todos los demás routers.
-• Elección del DR y BDR:
-• DR = Router con la prioridad de interface
-OSPF más alta.
-• BDR = Router con la 2da interface OSPF
-más alta.
-• Si las prioridades son iguales, se busca el
-router ID más alto.
-• Se elige cuando se prenden las interfaces
-en una interface de multiacceso.
-• Se mantiene como DR hasta que:
-• el DR falla.
-• El proceso OSPF falla.
-• La interface Falla.
-Configuración:
-R(config)#router ospf [process id], el process id es local de
-16bits.
-R(config-router)#network [ip network][wildcard mask]
-area [area-id], el área debe ser lam isma en todos los
-routers.
-R(config-router)#router-id [ip address], configuración
-router ID.
-R(config-router)#auto-cost reference-bandwidth
-R(config-if)#bandwidth [bandwidth in kbs]
-R(config-if)#ip ospf cost [cost], permite especificar el costo
-de la interface directamente.
-*Ambas lados del enlace deben tener el mismo costo de
-ancho de banda.
-R(config-if)#ip ospf hello-interval [seconds]
-R(config-if)#ip ospf dead-interval [seconds]
-*Dead interval 4 veces el hello interval.
-*Deben ser los mismos entre los vecinos.
-R#clear ip ospf process, modificar el ID del router.
-R#show ip ospf interface
-*Muestra el Neighbor ID, su dirección IP y la interfaz a la
-cual está conectada localmente.
-R#show interface [interface number], muestra el ancho de
-banda del enlace.
-R(config)#ip route 0.0.0.0 0.0.0.0 [interface number | next
-hop address]
-R(config-router)#default-information originate
-•
+4. Se añaden las rutas más cortos a la tabla de enrutamiento.
+
+**Métrica**
+- Es el valor acumulativo desde un router hasta la ruta destino incluyendola.
+- Costo: `(10^8)/bandwidth(bps)`
+
+**Router ID** 
+3 criterios:
+- Utiliza la IP configurada por el comando router-id.
+- Sino se utiliza la dirección loopback más alta. Las loopbacks siempre están 
+prendidas.
+- Sino se utiliza la dirección de interfaz más alta activa.
+
+**Multiaccess Networks**
+- Inundación de LSA en la red en la relación `n(n-1)/2`.
+- Se elige el DR & BDR para gestionar los LSA. No se eligen en ambientes punto 
+a punto.
+- `224.0.0.6` para enviar al DR & BDR .
+- `224.0.0.5` para enviar a todos los demás routers.
+- Elección del DR y BDR:
+    * DR = Router con la prioridad de interface OSPF más alta.
+    * BDR = Router con la 2da interface OSPF más alta.
+    * Si las prioridades son iguales, se busca el router ID más alto.
+    * Se elige cuando se prenden las interfaces en una interface de multiacceso.
+    * Se mantiene como DR hasta que:
+        - El DR falla.
+        - El proceso OSPF falla.
+        - La interface falla.
+
+**Configuración**
+
+        *R(config)#router ospf [process id]* el process id es local de
+        16bits.
+        *R(config-router)#network [ip network][wildcard mask] area [area-id]* 
+        el área debe ser la misma en todos los routers.
+        *R(config-router)#router-id [ip address]* configuración router ID.
+        *R(config-router)#auto-cost reference-bandwidth*
+        *R(config-if)#bandwidth [bandwidth in kbs]*
+        *R(config-if)#ip ospf cost [cost]* permite especificar el costo
+        de la interface directamente.
+        - Ambas lados del enlace deben tener el mismo costo de
+        ancho de banda.
+        *R(config-if)#ip ospf hello-interval [seconds]*
+        *R(config-if)#ip ospf dead-interval [seconds]*
+        - Dead interval 4 veces el hello interval.
+        - Deben ser los mismos entre los vecinos.
+        *R#clear ip ospf process* modificar el ID del router.
+        *R#show ip ospf interface*
+        - Muestra el Neighbor ID, su dirección IP y la interfaz a la
+        cual está conectada localmente.
+        *R#show interface [interface number]* muestra el ancho de banda del enlace.
+        *R(config)#ip route 0.0.0.0 0.0.0.0 [interface number | next hop address]*
+        *R(config-router)#default-information originate*

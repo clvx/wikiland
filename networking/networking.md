@@ -6,21 +6,24 @@
 4. NVRAM - configuration file
    TFTPServer - configuration file
 5. ROM/Console
+
 # Rutas estáticas
 - Se pueden sumarizar las rutas estáticas que salen de una misma interfaz 
 mientras que estas sean subnets de la sumarizada.
 - En una red de broadcast se utiliza el siguiente salto en vez de la interfaz 
 de salida.
+
 # CDP
 Para deshabilitar globalmente:
+
 		R(config)#no cdp run	
 
 		R# show cdp neighbors 
-Muestra la siguiente información de los vecinos:
-- Device ID del vecino.
-- Interface local conectada.
-- Tiempo de espera.
-- Demás información del vecino.
+        Muestra la siguiente información de los vecinos:
+        - Device ID del vecino.
+        - Interface local conectada.
+        - Tiempo de espera.
+        - Demás información del vecino.
 
 # Protocolos Vector-Distancia (RIP, IGRP, EIGRP)
 **Características**
@@ -29,29 +32,37 @@ Muestra la siguiente información de los vecinos:
 tabla de enrutamiento.
 - Vecindad.
 - Actualizaciones por broadcast.
+
 **Convergencia** Cuando todos los enrutadores manejan la misma información de 
 la red. Si no hay nueva información, entonces se ha agregado la convergencia.
+
 **Triggered Updates** Se dan cuando hay un cambio en la topología.
+
 **Random Jitter** Cuando hay colisión de actualizaciones de enrutamiento. Se 
 soluciona sincronizando las actualizaciones con la variable `RIP_JITTER`
+
 **RIP Timers**
 - Update timer
 - Invalid timer
 - Hold down timer
 - Flush timer
+
 **EIGRP Timers**
 - Partial updates
 - Triggered by topology changes
 - Non periodic.
 - Bounded.
+
 **Routing Loops** Cuando un paquete es transmitido continuamente. 
 Se suelen dar por los siguientes casos:
 - Rutas estáticas mal configuradas.
 - Convergencia lenta.
+
 Tienen como consecuencia:
 - Uso excesivo del ancho de banda.
 - Actualizaciones de enrutamiento no son procesadas.
 - Utilización de recursos de hw.
+
 **Prevención de routing loops**
 - count to infinity: Le pone una métrica de 16 si se cae la red.
 - Hold down timers: No se aceptan cambios de ruta hasta pasado un periodo de 
@@ -75,29 +86,35 @@ la cual la conoció.
     different network then the classful subnet mask of the network is applied 
     to the network in the routing update.
 - La sumarización automática no soporta redes discontiguas.
+
 **Configuración de una ruta por defecto**
         R(config)#ip route 0.0.0.0 0.0.0.0 [next hop |exit interface]
         R(config-router)#default-information originate
         R(config)#ip route [ip network] [network mask] [next hop | exit interface]
         R(config-router)#redistribute static
+
 # RIPv2
 - Classless
 - Routing updates are multicast.
 - Next hop address is included in updates
 - RIPv2 ignora actualizaciones RIPv1
+
 **RIPv1 & RIPv2 similitudes**
 - Timers para prevenir routing loops.
 - Uso de horizonte dividido y horizonte dividido con envenenamiento de ruta.
 - Triggered updates.
 - Hop count máximo de 15.
 - Realiza sumarización automática.
+
 **Configuración**
+
         R(config)#router rip
         R(config-router)#version 2
         # Cada subnet tiene una
         # entrada específica con su máscara como la interface de
         # salida o la dirección del siguiente salto.
         R(config-router)#no auto-summary 
+
 **Null interface**
 - Virtual interface• Traffic sent to a null interface is discarded.
 - No reciben ni envian tráfico.
@@ -120,6 +137,7 @@ retardos a cada uno de los enlaces al destino.
 - RTP: Usado por EIGRP pra transmitir y recibir paquetes EIGRP.
     * Puede ser orientado a conexión y no orientado a conexión.
     * Puede ser enviado por Unicast y Multicast(224.0.0.10)
+
 **Mensajes EIGRP**
 - *Hello Packets* Descubre y forma adyacencia con vecinos. Envio cada 5 segundos,
  en ambientes no broadcast cada 60 segundos.
@@ -132,7 +150,8 @@ tabla de enrutamiento.
 - *Bounded update* Solo se notifican los enrutadores que son impactados por el
 cambio.
 - *Query & Reply Packets* Usado por DUAL cuando busca redes específicas.
-• *Ack Packets* Confirma los demás paquetes.
+- *Ack Packets* Confirma los demás paquetes.
+
 **DUAL**
 • Previene los loops de enrutamiento.
 • Uso mínimo de ancho de banda.

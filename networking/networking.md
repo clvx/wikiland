@@ -153,84 +153,77 @@ cambio.
 - *Ack Packets* Confirma los demás paquetes.
 
 **DUAL**
-• Previene los loops de enrutamiento.
-• Uso mínimo de ancho de banda.
-• Convergencia rápida.
-• Sucesor: Mejor ruta con menor costo a una red
-destino.
-• Distancia factible: La métrica calculada más baja
-para llegar a una red desitno.
-Suceso factible: ruta libre de looping a la misma
-red destino que la ruta sucesor. Puede no haber un
-sucesor factible si no se cumple la condición de
+- Previene los loops de enrutamiento.
+- Uso mínimo de ancho de banda.
+- Convergencia rápida.
+- *Sucesor* Mejor ruta con menor costo a una red destino.
+- *Distancia factible* La métrica calculada más baja para llegar a una red destino.
+- *Suceso factible* Ruta libre de looping a la misma red destino que la ruta 
+sucesor. Puede no haber un sucesor factible si no se cumple la condición de 
 factibilidad.
-• Distancia Reportada: Métrica que un router
-reporta a un vecino para llegar a una red destino.
-• Condición de factibilidad: Cuando la distancia
-reportada es menor que la distancia factible del
-router a la misma red destino.
-Tabla topológica: Puede verse toda las rutas sucesoras y
-todas las rutas sucesoras factibles.
-Configuración:
-R(config)#router eigrp [AS], el AS debe ser el mismo en
-todos los routers.
-R(config-router)#network [ip network] [wildcard mask], el
-ip network es el classful, si se quiere agregar una red
-específica se utiliza la wildcard.
-R(config)#show ip eigrp neighbors
-• Address of neighbors.
-• Interface connected to neighbor
-R(config-if)#bandwitdth [kilobits], no cambia el ancho de
-banda del enlace.
-R#show ip eigrp topology
-R(config-router)#no auto-summary, ya no envia
-actualizaciones automáticamente sumarizadas.
-R(config-if)#ip summary-address eigrp [AS] [ip network]
-[subnet mask], para la configuración manual de la
-sumarización en una interfaz.
-R(config)#ip route 0.0.0.0 0.0.0.0 [exit interface|next hop
-address]
-R(config-router)#redistribute static
-*Para configurar redistribución de una estática.
-R(config-if)#ip hello-interval eigrp [AS] [seconds]
-R(config-if)#ip hold-time eigrp [AS] [seconds]
-*El tiempo es 3 veces el hello time, y cambiar el hello time
-implica cambiar el hold time.
-•
-2 condiciones para Null0 Interface EIGRP:
-• Al menos una subnet es aprendida via EIGRP
-• Sumarización automática está habilitada.
-Link State
-Características:
-• Utiliza muchos recursos de ancho de banda, CPU,
-memoria.
-• Utilizado por OSPF e IS-IS
-• Utiliza el algoritmos de Dijkstra o SPF.
-Convergencia:
-1. Cada enrutador aprende de las directamente
-conectadas.
-2. Intercambian hello packets para conocer a los
-vecinos.
-3. Cada router construye su propio LSP(link state
-Packet) que incluye:
+- *Distancia Reportada* Métrica que un router reporta a un vecino para llegar a
+ una red destino.
+- *Condición de factibilidad* Cuando la distancia reportada es menor que la distancia
+ factible del router a la misma red destino.
+
+**Tabla topológica**  Puede verse toda las rutas sucesoras y todas las rutas 
+sucesoras factibles.
+
+**Configuración**
+        R(config)#router eigrp [AS], *el AS debe ser el mismo en todos los routers.*
+        R(config-router)#network [ip network] [wildcard mask], el ip network es 
+        el classful, si se quiere agregar una red específica se utiliza la wildcard.
+        R(config)#show ip eigrp neighbors
+        - Address of neighbors.
+        - Interface connected to neighbor
+        R(config-if)#bandwitdth [kilobits], no cambia el ancho de banda del enlace.
+        R#show ip eigrp topology
+        R(config-router)#no auto-summary, ya no envia actualizaciones 
+        automáticamente sumarizadas.
+        R(config-if)#ip summary-address eigrp [AS] [ip network]
+        [subnet mask], para la configuración manual de la
+        sumarización en una interfaz.
+        R(config)#ip route 0.0.0.0 0.0.0.0 [exit interface|next hop
+        address]
+        R(config-router)#redistribute static
+        * Para configurar redistribución de una estática.
+        R(config-if)#ip hello-interval eigrp [AS] [seconds]
+        R(config-if)#ip hold-time eigrp [AS] [seconds]
+        * El tiempo es 3 veces el hello time, y cambiar el hello time
+        implica cambiar el hold time.
+
+- 2 condiciones para Null0 Interface EIGRP:
+    * Al menos una subnet es aprendida via EIGRP
+    * Sumarización automática está habilitada.
+
+# Link State
+
+**Características**
+- Utiliza muchos recursos de ancho de banda, CPU, memoria.
+- Utilizado por OSPF e IS-IS.
+- Utiliza el algoritmos de Dijkstra o SPF.
+
+**Convergencia**
+1. Cada enrutador aprende de las directamente conectadas.
+2. Intercambian hello packets para conocer a los vecinos.
+3. Cada router construye su propio LSP(link state Packet) que incluye:
 - Neighbor ID.
 - Link type.
 - Bandwith.
-- Cost.- Neighbor who is connected to it.
-Se indunda a todos los vecinos el LSP los cuales
-guardan la información en una base de datos, hasta
-que todos los vecinos tengan la misma
-información.
-5. Cada router utiliza la base de datos para construir
-un mapa completo de la topología y computar las
-mejores rutas a las redes destino.
-Hello Packet: Sirve para crear adyascencia entre vecinos.
-Sirven para saber si el enlace se mantiene encendido.
-LSP: Cada router construye su propio paquete de estado
-enlace. Se reenvían a todos los vecinos. Se crean cuando:
-• Se inicia el router o el proceso de enrutamiento.
-• Cuando hay un cambio en la topología.
-OSPF:
+- Cost.
+- Neighbor who is connected to it.
+4. Se indunda a todos los vecinos el LSP los cuales guardan la información en una 
+base de datos, hasta que todos los vecinos tengan la misma información.
+5. Cada router utiliza la base de datos para construir un mapa completo de la 
+topología y computar las mejores rutas a las redes destino.
+
+- *Hello Packet* Sirve para crear adyascencia entre vecinos. Sirven para saber 
+si el enlace se mantiene encendido.
+- *LSP* Cada router construye su propio paquete de estado enlace. Se reenvían a 
+todos los vecinos. Se crean cuando:
+    * Se inicia el router o el proceso de enrutamiento.
+    * Cuando hay un cambio en la topología.
+# OSPF
 • Distancia administrativa: 110
 • NO sumariza automáticamente las redes cercanas.
 5 tipos de paquetes:

@@ -88,4 +88,6 @@
 
 6. [OpenVPN](networking/openvpn)
 
-7. [General Networking](networking/networking)
+7. CCNA
+    1. [Routing Protocols](networking/ccna2)
+    2. [Switching](networking/ccna3)

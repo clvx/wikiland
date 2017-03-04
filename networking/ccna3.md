@@ -207,296 +207,320 @@ Habilitar SSH:
         S1(config)#line vty 0 4
         S1(config-line)#transport input SSH
 
-MAC Address Flooding: El atacante envia paquetes con direcciones mac destino invalidas sobrecargando la MAC AddressTable con la finalidad de que el switch entre en fail-open-mode comportandose como un hub, y asi poder conseguir que los
+**MAC Address Flooding** El atacante envia paquetes con direcciones mac destino 
+inválidas sobrecargando la MAC Address Table con la finalidad de que el switch 
+entre en fail-open-mode comportandose como un hub, y asi poder conseguir que los
 siguientes paquetes se reenvien a todos los puertos.
-Spoofing Attacks: 2 tipos
-•
-•
-Spoofing: Un atacante activa un servidor DHCP en un segmento de la red, el cliente solicita un Ip al DHCP más
-cercano, como el servidor DCHP falso se encuentra en el mismo segmento le entrega una configuración infectada
+
+**Spoofing Attacks** 2 tipos:
+- Spoofing: Un atacante activa un servidor DHCP en un segmento de la red, el 
+cliente solicita un IP al DHCP más cercano, como el servidor DCHP falso se 
+encuentra en el mismo segmento le entrega una configuración infectada
 con la finalidad de redireccionar los paquetes a algún lugar.
-DHCP Spoofing: Un atacante requiere varias direcciones IP al servidor real DHCP agotando todos los IP's del
-segmento.
-CDP Attacks:
-•
-•
-Protocolo de cisco que enviar información del estado de los enlaces como puertos, modelos de dispositivo, IP
-address, sowftware version, plataforma, VLAN nativa.
-La información se envia en texto plano, siendo una vulnerabilidad.
-Telnet Attacks:
-•
-•
-Ataques de fuerza bruta para conseguir los passwords.
-• Se debe cambiar las contraseñas frecuentemente.
-• Utilizar contraseñas fuertes.
-• Limitar el número de entradas VTY.
-Ataques DoS.
-• Se previene actualizando el IOS.
-Security Tools:
-•
-•
-•
-•
-Network Security Audit ayuda a:
-• Que tipo de información se puede conseguir monitoreando el tráfico.
-• Determina la cantidad de MAC spoofed a eliminar.
-• Determina la actualización de la MAC Address Table.
-Network Penetration Testing ayuda a:
-• Identifica debilidades dentro de la configuración de los dispositivos networking.
-• Prueba diferentes ataques dentro de la red para detectar vulnerabilidades.
-Caracteristicas de las herramientos de seguridad:
-• Identificación de servicios por escaneo de puertos.
-• Soporte de servicios SSL.
-• Testeo destructivo y no destructivo.
-• Vulnerabilidades en la base de datos.
-Funciones de las herramientas de seguridad:
-• Capturar mensajes de chat.
-• Carpturar archivos de tráfico NFS.
-• Capturar paquetes HTTP.
-• Capturar mensajes de correo en formato mbox.
-• Capturar contraseñas.
-• Interceptar paquetes.
-Port Security:
-•
-•
-Limita el número de direcciones MAC válidas permitidas en un puerto.
-Tipos de seguridad:
-• Especificar un grupo de direcciones MAC permitidas en un puerto.
-• Permitir solamente una dirección MAC accesar a un puerto.•
-•
-• Especificar que el puerto se apague automáticamente si una dirección MAC no permitida es detectada.
-Tipo de direcciones MAC para port security:
-• Static secure MAC addresses, las direcciones MAC son manualmente configuradas y se agregan a la
-running-config. S(config-if)#switchport port-security mac-address [dirección mac]
-• Dynamic secure MAC addresses, las direcciones MAC son dinámicamente aprendidas y almacenadas en
-la tabla de direcciones. Son removidas si se reinicia el switch.
-• Sticky secure MAC addresses, los puertos aprenden dinámicamente las direcciones MAC agregandolas a
-la running-config.
-• S(config-if)#switchport port-security mac-address sticky, la interface convierte toda las
-direcciones dinámicas MAC seguras aprendidas a "sticky secure MAC address" y las agrega a la
-running-config.
-• S(config-if)#no switchport port-security mac-address sticky, las "sticky secure MAC addresses"
-se mantienen en la tabla de direcciones pero son removidas de la running-config.
-• S(config-if)#switchport port-security mac-address sticky [dirección mac], estas direcciones son
-añadidas a la tabla de direcciones y agregadas a la running-config. Si port security está
-deshabilitado no se agregan a la running-config.
-Security Violation: Occure cuando,
-• Una estación que su dirección mac no se encuentra en la tabla de direcciones accede a la interface cuando
-la tabla de direcciones está llena.
-• Una dirección está siendo utilizado en 2 interfaces en la misma VLAN.
-• Security Violation Mode:CCNA III
-Módulo 3:
-Introducción VLAN's
-• Permite crear grupos de dispositivos de red contectados logicamente como si estuvieran en una red independiente,
-incluso si comparten la infraestructura de red con otras VLAN's.
-• Pueden ser nombradas para su fácil identificación.
-• Una VLAN es una subred lógica separada.
-• Configuración básica:
-• Configurar la VLAN en el switch.
-• Asignar obligatoriamente un ID.
-• Asignar puertos a la VLAN.
-• Asignar un IP a las PC que representen a la VLAN.
-Beneficios de las VLAN
-•
-•
-•
-•
-•
-Seguridad: Agrupa los usuarios según el tipo de necesidades de la red.
-Reducción de costo: Uso eficiente del ancho de banda y menos actualizaciones de infraestructura.
-Alto rendimiento.
-Mitigación de tormentas de broadcast. Dividir una red en VLAN's, reduce la cantidad de dispositivos en participar
-en una tormenta de broadcast.
-Escalabilidad.
-Rangos de los VLAN ID
-•
-•
-Rango Normal:
-• Diseñado para redes pequeñas y medianas.
-• VLAN ID entre 1 y 1005.
-• VLAN ID entre 1002-1005 reservado para Token Ring y FDDI.
-• Las vlans se almacenan en el archivo vlan.dat de la memoria flash.
-Rango extendido:
-• VLAN ID entre 1006 y 4094.
-• Diseñado para ISP's.
-• Almacenadas en el archivo 'running configuration'.
-Tipos de VLAN's
-•
-•
-•
-•
-Port-based VLAN: Asociado con un puerto llamado 'access VLAN'.
-Data VLAN/User VLAN: Solo transporta tráfico generado por un usuario.
-Default VLAN:
-• Todos los puertos se vuelven miembros de la VLAN por defecto despues del booteo inicial.
-• Permite que todos los dispositivos conectados a cualquier puerto puedan comunicarse con otros
-dispositivos en otros puertos.
-• VLAN 1 es VLAN por defecto.
-• No se puede eliminar o renombrar.
-• CDP y STP son asociados a la VLAN 1.
-Native VLAN:
-• Es asignada a un trunk port 802.1Q.
-• Un puerto trunk 802.1Q soporta tráfico de cualquier VLAN(etiquetado) como tráfico que no viene de una
-VLAN(No etiquetado).
-• El tráfico no etiquetado se transporta por la VLAN nativa.
-• Sirve como un identificador común para orígenes y destino distintos de un elance trunk.•
-•
-•
-VLAN administrativa:
-• Es cualquier VLAN configurada para a las funciones de administración del switch.
-• La VLAN 1 es la VLAN administrativa por defecto.
-• Se asigna una dirección IP y máscara de red.
-Voice VLAN:
-• Asegurar ancho de banda para asegurar la calidad de la voz.
-• Prioridad de transmisión sobre otro tipos de tráfico.
-• Habilidad para ser enrutado en áreas congestionadas.
-• Retardo menor de 150 ms a través de la red.
-Tipos de tráfico:
-• Telefonía IP:
-• Tráfico de señales: Responsable de la configuración de las llamadas.
-• Tráfico de voz: La transmisión de los paquetes de la conversación en sí.
-• IP Multicast: Enviado desde un origen a un grupo multicas identificado por una IP y una MAC destino del
-grupo multicast.
-• Data Normal: Tráfico relacionado con la creación y almacenamiento, servicios de impresión, correo, y
-otras aplicaciones de red compartidas.
-Switch Ports:
-•
-•
-•
-•
-Interfaces de capa 2 asociadas a un puerto físico.
-Usados para administrar la interface fisica y asociarla a protocolos de capa 2.
-Pueden pertenecer a una o más VLAN's.
-Modos de Switch Port:
-• Static VLAN:
-• Los puertos a un switch son manualmente asignados a una VLAN.
-• Si la VLAN no existe, es creada cuando se asigna la VLAN al puerto.
-• Dynamic VLAN: Se asignan puertos del switch a las VLAN's dinamicamente, basado en la dirección de
-MAC del dispositivo conectado al puerto que se registran en un VMPS.
-• Voice VLAN:
-• Un puerto configurado para modo voz para que soporte teléfonos IP.
-• Tiene que ser configurado como VLAN de voz y datos.
-Dominios de broadcast con VLANs
-•
-•
-Redes sin VLANs: Un switch recibe una trama de broadcast en uno de sus puertos y lo reenvia a todos los otros
-puertos del switch.
-Redes con VLANs: Cuando una trama de broadcast llega a un puerto asociado a una VLAN X, la trama solamente
-se envia a los puertos configurados que soportan la VLAN X.
+- DHCP Spoofing: Un atacante requiere varias direcciones IP al servidor real 
+DHCP agotando todos los IP's del segmento.
+
+**CDP Attacks**
+- Protocolo de cisco que envia información del estado de los enlaces como 
+puertos, modelos de dispositivo, IP address, software version, plataforma, 
+VLAN nativa.
+- La información se envia en texto plano, siendo una vulnerabilidad.
+
+**Telnet Attacks**
+- Ataques de fuerza bruta para conseguir los passwords.
+    * Se debe cambiar las contraseñas frecuentemente.
+    * Utilizar contraseñas fuertes.
+    * Limitar el número de entradas VTY.
+- Ataques DoS.
+    * Se previene actualizando el IOS.
+
+**Security Tools**
+- Network Security Audit ayuda a:
+    * Que tipo de información se puede conseguir monitoreando el tráfico.
+    * Determina la cantidad de MAC spoofed a eliminar.
+    * Determina la actualización de la MAC Address Table.
+- Network Penetration Testing ayuda a:
+    * Identifica debilidades dentro de la configuración de los dispositivos networking.
+    * Prueba diferentes ataques dentro de la red para detectar vulnerabilidades.
+- Caracteristicas de las herramientos de seguridad:
+    * Identificación de servicios por escaneo de puertos.
+    * Soporte de servicios SSL.
+    * Testeo destructivo y no destructivo.
+    * Vulnerabilidades en la base de datos.
+- Funciones de las herramientas de seguridad:
+    * Capturar mensajes de chat.
+    * Capturar archivos de tráfico NFS.
+    * Capturar paquetes HTTP.
+    * Capturar mensajes de correo en formato mbox.
+    * Capturar contraseñas.
+    * Interceptar paquetes.
+
+# Port Security
+- Limita el número de direcciones MAC válidas permitidas en un puerto.
+- Tipos de seguridad:
+    * Especificar un grupo de direcciones MAC permitidas en un puerto.
+    * Permitir solamente una dirección MAC accesar a un puerto.
+    * Especificar que el puerto se apague automáticamente si una dirección MAC 
+    no permitida es detectada.
+- Tipo de direcciones MAC para port security:
+    * *Static secure MAC addresses*, las direcciones MAC son manualmente 
+    configuradas y se agregan a la running-config. 
+    `S(config-if)#switchport port-security mac-address [dirección mac]`
+    • *Dynamic secure MAC addresses*, las direcciones MAC son dinámicamente 
+    aprendidas y almacenadas en la tabla de direcciones. Son removidas si se 
+    reinicia el switch.
+    • *Sticky secure MAC addresses*, los puertos aprenden dinámicamente las 
+    direcciones MAC agregandolas a la running-config.
+        - `S(config-if)#switchport port-security mac-address sticky`, la 
+        interface convierte toda las direcciones dinámicas MAC seguras aprendidas
+         a "sticky secure MAC address" y las agrega a la running-config.
+        - `S(config-if)#no switchport port-security mac-address sticky`, las 
+        "sticky secure MAC addresses" se mantienen en la tabla de direcciones 
+        pero son removidas de la running-config.
+        - `S(config-if)#switchport port-security mac-address sticky [dirección mac]`, 
+        estas direcciones son añadidas a la tabla de direcciones y agregadas a 
+        la running-config. Si port security está deshabilitado no se agregan a 
+        la running-config.
+
+**Security Violation** 
+- Cuando una estación que su dirección mac no se encuentra en la tabla de 
+direcciones accede a la interface cuando la tabla de direcciones está llena.
+- Una dirección está siendo utilizado en 2 interfaces en la misma VLAN.
+- Security Violation Mode:
+### **NECESITA GRAFICO**
+
+# VLAN's
+
+**Introducción**
+- Permite crear grupos de dispositivos de red contectados logicamente como si 
+estuvieran en una red independiente, incluso si comparten la infraestructura de 
+red con otras VLAN's.
+- Pueden ser nombradas para su fácil identificación.
+- Una VLAN es una subred lógica separada.
+- Configuración básica:
+    * Configurar la VLAN en el switch.
+    * Asignar obligatoriamente un ID.
+    * Asignar puertos a la VLAN.
+    * Asignar un IP a las PC que representen a la VLAN.
+
+**Beneficios de las VLAN**
+- Seguridad: Agrupa los usuarios según el tipo de necesidades de la red.
+- Reducción de costo: Uso eficiente del ancho de banda y menos actualizaciones 
+de infraestructura.
+- Alto rendimiento.
+- Mitigación de tormentas de broadcast. Dividir una red en VLAN's, reduce la 
+cantidad de dispositivos en participar en una tormenta de broadcast.
+- Escalabilidad.
+
+**Rangos de los VLAN ID**
+- Rango Normal:
+    * Diseñado para redes pequeñas y medianas.
+    * VLAN ID entre 1 y 1005.
+    * VLAN ID entre 1002-1005 reservado para Token Ring y FDDI.
+    * Las vlans se almacenan en el archivo `vlan.dat` de la memoria flash.
+- Rango extendido:
+    * VLAN ID entre 1006 y 4094.
+    * Diseñado para ISP's.
+    * Almacenadas en el archivo 'running configuration'.
+
+**Tipos de VLAN's**
+- Port-based VLAN: Asociado con un puerto llamado 'access VLAN'.
+- Data VLAN/User VLAN: Solo transporta tráfico generado por un usuario.
+- Default VLAN:
+    * Todos los puertos se vuelven miembros de la VLAN por defecto despues del 
+    booteo inicial.
+    * Permite que todos los dispositivos conectados a cualquier puerto puedan 
+    comunicarse con otros dispositivos en otros puertos.
+    * VLAN 1 es VLAN por defecto.
+    * No se puede eliminar o renombrar.
+    * CDP y STP son asociados a la VLAN 1.
+- Native VLAN:
+    * Es asignada a un trunk port 802.1Q.
+    * Un puerto trunk 802.1Q soporta tráfico de cualquier VLAN(etiquetado) como
+     tráfico que no viene de una VLAN(No etiquetado).
+    * El tráfico no etiquetado se transporta por la VLAN nativa.
+    * Sirve como un identificador común para orígenes y destino distintos de un
+     enlace trunk.
+- VLAN administrativa:
+    * Es cualquier VLAN configurada para a las funciones de administración del 
+    switch.
+    * La VLAN 1 es la VLAN administrativa por defecto.
+    * Se asigna una dirección IP y máscara de red.
+- Voice VLAN:
+    * Asegurar ancho de banda para asegurar la calidad de la voz.
+    * Prioridad de transmisión sobre otro tipos de tráfico.
+    * Habilidad para ser enrutado en áreas congestionadas.
+    * Retardo menor de 150 ms a través de la red.
+
+*T*ipos de tráfico**
+    - Telefonía IP:
+        * Tráfico de señales: Responsable de la configuración de las llamadas.
+        * Tráfico de voz: La transmisión de los paquetes de la conversación en sí.
+    - IP Multicast: Enviado desde un origen a un grupo multicast 
+    identificado por una IP y una MAC destino del grupo multicast.
+    - Data Normal: Tráfico relacionado con la creación y almacenamiento, 
+    servicios de impresión, correo, y otras aplicaciones de red compartidas.
+
+**Switch Ports**
+- Interfaces de capa 2 asociadas a un puerto físico.
+- Usados para administrar la interface fisica y asociarla a protocolos de capa 2.
+- Pueden pertenecer a una o más VLAN's.
+- Modos de Switch Port:
+    * Static VLAN:
+        • Los puertos a un switch son manualmente asignados a una VLAN.
+        • Si la VLAN no existe, es creada cuando se asigna la VLAN al puerto.
+    * Dynamic VLAN: Se asignan puertos del switch a las VLAN's dinamicamente, 
+    basado en la dirección de MAC del dispositivo conectado al puerto que se 
+    registran en un VMPS.
+    * Voice VLAN:
+        • Un puerto configurado para modo voz para que soporte teléfonos IP.
+        • Tiene que ser configurado como VLAN de voz y datos.
+
+**Dominios de broadcast con VLANs**
+- Redes sin VLANs: Un switch recibe una trama de broadcast en uno de sus puertos
+ y lo reenvia a todos los otros puertos del switch.
+- Redes con VLANs: Cuando una trama de broadcast llega a un puerto asociado a 
+una VLAN X, la trama solamente se envia a los puertos configurados que soportan
+ la VLAN X.
+
 Comunicación en VLANs
-•
-•
-Intra-VLAN: Cuando 2 dispositivos de la misma VLAN se comunican entre si.
-Inter-VLAN: Cuando 2 dispositivos de diferentes VLANs se comunican por medio de un enrutador.
-VLAN Trunk
-•
-•
-•
-•
-Enlace punto a punto entre 2 dispositivos que transportan mas the una VLAN.
-Una VLAN Trunk no pertenece a una VLAN específica, más bien un conducto entre switches y enrutadores.
-Permite reducir la necesidad de puertos para que 1 o más VLANs se puedan comunicar entre 2 dispositivos, solo
-con el uso de un puerto en modo trunk.
-802.1Q Frame Taggin
-• La cabecera de una trama no contiene información acerca de la pertenencia a una VLAN.•
-El trunk etiqueta cada trama con la VLAN de pertenencia (PVID) utilizando el protocolo 802.1Q.
-VLAN Nativa y 802.1Q Trunking
-•
-•
-Tramas etiqueteadas en VLANs Nativa:
-• Eliminadas por el switch.
-• Configurar dispositivos para que no envian tramas etiquetadas hacia una VLAN Nativa.
-Tramas sin etiquetar en VLANs Nativa:
-• Los puertos en modo trunk reenvian las tramas sin etiquetar por la VLAN Nativa.
-• Tienen el Port VLAN ID(PVID) cambiado al valor configurado por la VLAN de pertenencia.
-Configuración VLAN Nativa:
-S1#configure terminal
-S1(config)#interface [type][slot/port number]
-S1(config-if)#switchport mode trunk
-S1(config-if)#switchport trunk native vlan [number]
-Protocolos Trunk:
-•
-•
-•
-Trunk 802.1Q:
-• Soporta tráfico etiquetado y no etiquetado.
-• Un puerto trunk 802.1Q es asignado a un PVID por defecto(Default VLAN) y todo el tráfico sin etiquetar
-viaja sobre el puerto PVID por defecto.
-• Todo el tráfico sin etiquetar con un VLAN ID null se asume que pertenecen al puerto PVID por defecto.
-• Un paquete con un VLAN ID igual al puerto PVID por defecto es enviado sin etiquetas, el resto del tráfico
-es enviado con un PVID etiquetado.
-ISL trunk:
-• Todo los paquetes son encapsulados con una cabecera ISL.
-• Las tramas nativas recibidas por un trunk ISL son eliminadas.
-DTP(Dynamic Trunking Protocol)
-• Protocolo propietario de CISCO.
-• Negocia asociación trunk solo si el puerto en el otro lado del switch soporta DTP.
-• DTP soporta 802.1Q e ISL.
-• Trunking Modes:
-• ON(por defecto):
-• Envia tramas DTP periodicas, al puerto remoto.
-• Configurado con switchport mode trunk
-• El puerto siempre se consideran en un estado de trunking incondicional sin importar el
-tipo de mensaje que otorgue el puerto remoto.
-• Dynamic auto:
-• Envia tramas DTP periodicas al puerto remoto.
-• Configurado con switchportmode dynamic auto
-• Solamente entra a un estado trunking solo si el puerto remoto está configurado como
-ON, o desirable.
-• Si ambos puertos están configurados como auto, se configuran en modo acceso.
-• Dynamic desirable:
-• Envia tramas DTP periodicas al puerto remoto.
-• Configurado con switchport mode dynamic desirable.
-• Entra a un estado trunking, solo si el puerto remoto está configurado como on, desirable,
-o auto.
-• Si está en modo no negocia, el puerto se mantiene como no trunking.•
-Deshabilitar DTP
-• Permite que el switch no envie tramas DTP.
-• Configurado por switchport nonegotiate.
-• El puerto local es considerado en un estado incondicional trunking.
-• Utilizado para configurar switches de diferentes marcas.
-GRÁFICO RESUMEN DE MODOS TRUNK
-Configuración de VLAN y Trunks
+- Intra-VLAN: Cuando 2 dispositivos de la misma VLAN se comunican entre si.
+- Inter-VLAN: Cuando 2 dispositivos de diferentes VLANs se comunican por medio 
+de un enrutador.
+
+**VLAN Trunk**
+- Enlace punto a punto entre 2 dispositivos que transportan mas de una VLAN.
+- Una VLAN Trunk no pertenece a una VLAN específica, más bien un conducto entre 
+switches y enrutadores.
+- Permite reducir la necesidad de puertos para que 1 o más VLANs se puedan 
+comunicar entre 2 dispositivos, solo con el uso de un puerto en modo trunk.
+- 802.1Q Frame Taggin:
+    * La cabecera de una trama no contiene información acerca de la pertenencia
+     a una VLAN.
+    * El trunk etiqueta cada trama con la VLAN de pertenencia (PVID - Port VLAN ID) 
+    utilizando el protocolo 802.1Q.
+
+**VLAN Nativa y 802.1Q Trunking**
+- Tramas etiqueteadas en VLANs Nativa:
+    * Eliminadas por el switch.
+    * Configurar dispositivos para que no envian tramas etiquetadas hacia una 
+    VLAN Nativa.
+- Tramas sin etiquetar en VLANs Nativa:
+    * Los puertos en modo trunk reenvian las tramas sin etiquetar por la VLAN 
+    Nativa.
+    * Tienen el Port VLAN ID(PVID) cambiado al valor configurado por la VLAN de
+     pertenencia.
+
+**Configuración VLAN Nativa**
+        S1#configure terminal
+        S1(config)#interface [type][slot/port number]
+        S1(config-if)#switchport mode trunk
+        S1(config-if)#switchport trunk native vlan [number]
+
+**Protocolos Trunk**
+- Trunk 802.1Q:
+    * Soporta tráfico etiquetado y no etiquetado.
+    * Un puerto trunk 802.1Q es asignado a un PVID por defecto(Default VLAN) y 
+    todo el tráfico sin etiquetar viaja sobre el puerto PVID por defecto.
+    * Todo el tráfico sin etiquetar con un VLAN ID null se asume que pertenecen 
+    al puerto PVID por defecto.
+    * Un paquete con un VLAN ID igual al puerto PVID por defecto es enviado sin
+     etiquetas, el resto del tráfico es enviado con un PVID etiquetado.
+
+- ISL trunk:
+    * Todo los paquetes son encapsulados con una cabecera ISL.
+    * Las tramas nativas recibidas por un trunk ISL son eliminadas.
+
+**DTP(Dynamic Trunking Protocol)**
+- Protocolo propietario de CISCO.
+- Negocia asociación trunk solo si el puerto en el otro lado del switch soporta 
+DTP.
+- DTP soporta 802.1Q e ISL.
+- Trunking Modes:
+    * ON(por defecto):
+        - Envia tramas DTP periodicas, al puerto remoto.
+        - Configurado con `switchport mode trunk`
+        - El puerto siempre se consideran en un estado de trunking incondicional
+         sin importar el tipo de mensaje que otorgue el puerto remoto.
+    * Dynamic auto:
+        - Envia tramas DTP periodicas al puerto remoto.
+        - Configurado con `switchport mode dynamic auto`
+        - Solamente entra a un estado trunking solo si el puerto remoto está 
+        configurado como ON, o desirable.
+        - Si ambos puertos están configurados como auto, se configuran en modo 
+        acceso.
+    * Dynamic desirable:
+        - Envia tramas DTP periodicas al puerto remoto.
+        - Configurado con `switchport mode dynamic desirable`
+        - Entra a un estado trunking, solo si el puerto remoto está configurado 
+        como on, desirable, o auto.
+        - Si está en modo no negocia, el puerto se mantiene como no trunking.
+    * Deshabilitar DTP
+        - Permite que el switch no envie tramas DTP.
+        - Configurado por `switchport nonegotiate`
+        - El puerto local es considerado en un estado incondicional trunking.
+        - Utilizado para configurar switches de diferentes marcas.
+
+### **GRÁFICO RESUMEN DE MODOS TRUNK**
+
+**Configuración de VLAN y Trunks**
 Añadir una VLAN:
-S1#configure terminal
-S1(config)#vlan vlan id
-S1(config-vlan)#name vlan name
-S1(config-vlan)#end
+
+        S1#configure terminal
+        S1(config)#vlan vlan id
+        S1(config-vlan)#name vlan name
+        S1(config-vlan)#end
+
 Verificación:
-S1#show vlan brief
+
+        S1#show vlan brief
+
 Asignar una VLAN a un puerto:
-S1#configure terminal
-S1(config)#interface [type][slot/number]
-S1(config-if)#switchport mode access
-S1(config-if)#switchport access mode vlan [number]
+
+        S1#configure terminal
+        S1(config)#interface [type][slot/number]
+        S1(config-if)#switchport mode access
+        S1(config-if)#switchport access mode vlan [number]
+
 Elimina una VLAN a un puerto:
-S1#configure terminal
-S1(config)#interface [type][slot/number]
-S1(config-if)#no switchport access mode vlan // Reasigna el puerto a la VLAN por defecto.
+
+        S1#configure terminal
+        S1(config)#interface [type][slot/number]
+        S1(config-if)#no switchport access mode vlan // Reasigna el puerto a la VLAN por defecto.
+
 Eliminar una VLAN:
-S1(config)#no vlan [id]
+
+        S1(config)#no vlan [id]
+
 Eliminar todas las VLAN:
-S1#delete flash:vlan.dat
+
+        S1#delete flash:vlan.dat
+
 Configurar trunk 802.1Q
-S1#configure terminal
-S1(config)#interface [type][slot/number]
-S1(config-if)#switchport mode trunk //Se habilita DTP por defecto.
-S1(config-if)#switchport trunk native vlan [number] //Especifica una vlan nativa diferente a la vlan por defecto.Convertir de trunk a modo acceso:
-S1#configure terminal
-S1(config)#interface [type][slot/number]
-S1(config-if)#switchport mode access
+
+        S1#configure terminal
+        S1(config)#interface [type][slot/number]
+        S1(config-if)#switchport mode trunk //Se habilita DTP por defecto.
+        S1(config-if)#switchport trunk native vlan [number] //Especifica una vlan nativa diferente a la vlan por defecto.
+
+Convertir de trunk a modo acceso:
+
+        S1#configure terminal
+        S1(config)#interface [type][slot/number]
+        S1(config-if)#switchport mode access
+
 Reasignar la vlan nativa como la vlan por defecto.
-S1#configure terminal
-S1(config)#interface [type][slot/number]
-S1(config-if)#no switchport trunk native.
-Resolución de problemas:
-•
-•
-•
-VLANs Nativas diferentes: Un enlace está configurado con diferentes VLANs Nativas en sus puertos.
-Modo trunk diferentes.
-Subredes diferentes.Módulo 4:
-VTP(VLAN Trunking Protocol)
+
+        S1#configure terminal
+        S1(config)#interface [type][slot/number]
+        S1(config-if)#no switchport trunk native.
+
+**Resolución de problemas**
+- VLANs Nativas diferentes: Un enlace está configurado con diferentes VLANs Nativas en sus puertos.
+- Modo trunk diferentes.
+- Subredes diferentes.Módulo 4:
+
+# VTP(VLAN Trunking Protocol)
 • Permite propagar configuraciones de VLANs a otros switches en la red.
 • Solo soporta VLANs de rango normal (ID 1-1005).
 • Varios tipos de VTP:

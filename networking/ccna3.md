@@ -945,33 +945,29 @@ generando un loop de capa 2.
     * Error por tamaño de la red
 
 # Inter-Vlan Routing
-Tradicionalmente el enrutamiento es conectando diferentes interfaces físicas del enrutador a diferentes puertos del
-switch en modo acceso definiendo diferentes VLAN's a cada puerto.
-Router-on-a-stick:
-• Enrutadores que pueden transportar múltiples VLAN's por una interface física.
-• Acepta tráfico etiquetado con la VLAN origen por la interface trunk adyascente utilizando subinterfaces,
-para luego reenviarlo por la misma interface hacia la VLAN destino.
-• Pueden
-ser
-hechos
-por
-switches
-de
-capa
-3
-o
-enrutadores.
-Subinterfaces:
-• Interface virtuales basadas en software que son asignadas a una interface física.
-• Permite que una interface física mantenga varias redes lógicas.
-• Mantiene el mismo tipo de enrutamiento que las interfaces tradicionales.
-• La interface física debe estar conectada a un enlace trunk hacia el switch adyascente que etiqueta
-los paquetes con su VLAN asociada.
-• Cada interface se configura su dirección IP de la VLAN de pertenencia, máscara y VLAN única.
-• Configuración:
-• R(config)#interafece [type][number]/[number].[vlan-id] //no requerido que sea el vlan-id
-• R(config-subif)#encapsulation dot1q [vlan id]
-• R(config-subif)#ip address [IP address][IP mask]
-• R(config-if)#interafece [type][number]
-• R(config-if)#no
-shutdown
+- Tradicionalmente el enrutamiento es conectando diferentes interfaces físicas 
+del enrutador a diferentes puertos del switch en modo acceso definiendo 
+diferentes VLAN's a cada puerto.
+
+**Router-on-a-stick**
+- Enrutadores que pueden transportar múltiples VLAN's por una interface física.
+- Acepta tráfico etiquetado con la VLAN origen por la interface trunk adyascente
+ utilizando subinterfaces, para luego reenviarlo por la misma interface hacia 
+la VLAN destino.
+- Pueden ser hechos por switches de capa 3 o enrutadores.
+
+**Subinterfaces**
+- Interface virtuales basadas en software que son asignadas a una interface física.
+- Permite que una interface física mantenga varias redes lógicas.
+- Mantiene el mismo tipo de enrutamiento que las interfaces tradicionales.
+- La interface física debe estar conectada a un enlace trunk hacia el switch 
+adyascente que etiqueta los paquetes con su VLAN asociada.
+- *Cada interface se configura su dirección IP de la VLAN de pertenencia, máscara
+ y VLAN única*.
+- Configuración:
+
+        R(config)#interafece [type][number]/[number].[vlan-id] //no requerido que sea el vlan-id
+        R(config-subif)#encapsulation dot1q [vlan id]
+        R(config-subif)#ip address [IP address][IP mask]
+        R(config-if)#interafece [type][number]
+        R(config-if)#no shutdown

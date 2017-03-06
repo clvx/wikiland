@@ -521,148 +521,137 @@ Reasignar la vlan nativa como la vlan por defecto.
 - Subredes diferentes.Módulo 4:
 
 # VTP(VLAN Trunking Protocol)
-• Permite propagar configuraciones de VLANs a otros switches en la red.
-• Solo soporta VLANs de rango normal (ID 1-1005).
-• Varios tipos de VTP:
-• VTP Server: Distribuye y sincroniza información de VLANs a los VTP clientes.
-• VTP Cliente
-• VTP Transparente
-• No funciona si los enlaces trunk en una red de switches que soporta VTP no están activos.
-Beneficios de VTP
-•
-•
-•
-Configuración de VLANs consistente a través de la red.
-Monitoreo y seguimiento de las VLANs.
-Dynamic trunk configuration cuando las VLANs son añadidas a la red.
-Componentes del VTP
-•
-•
-Dominio VTP:
-• Consiste en uno o mas switches interconectados que comparten los mismos detalles de configuración de
-VLANs utilizando notificaciones VTP.
-• Permite limitar la extención en la cual las cambios de configuración son propagados en la red si un error
-ocurre.
-Notificaciones VTP:
-• Sistema jerárquico de notificaciones para distribuir y sincronizar configuraciones de VLANs en un mismo
-dominio VTP.
-• Trama VTP: Imbuida en el campo de DATA de una trama normal de capa 2. Contiene los siguientes
-campos:
-• Nombre de dominio.
-• Tamaño del nombre de dominio.
-• Versión.
-• Número de revisión de la configuración.
-• Determina si la información de configuración recibido desde otro swtich VTP es más
-reciente que la información de configuración almacenada.
-• Valor de 32 bits que indica el nivel de revisión de una trama VTP.
-• Valor por defecto es 0.
-• Cada vez que una VLAN es añadida o eliminada, el número de revisión se incrementa.
-• Cada dispositivo revisa su propia revisión de configuración VTP.
-• El cambio de nombre de dominio reinicia el contador del numero de revisión de
-configuración VTP.
-• Las notificaciones se envia a una dirección multicast que representa al dominio.
-• 3 tipos de notificaciones:
-• Summary Advertisement:
-• Contiene el nombre de dominio, el actual número de revisión y otros detalles VTP.
-• Enviados cada 5 minutos por un VTP server o cliente, o inmediatamente un cambio
-ocurra.
-• Subset Advertisement: Contiene información de VLANs y vienen luego de un summary
-advertisement que responde a un request advertisement del cliente, se dan por,
-• Crear o eliminar VLANs.
-• Suspender o activar VLANs.
-• Cambiar el nombre de una VLAN.
-• Cambiar el MTU de una VLAN.
-• Request Advertisement: Enviados para requerir información VTP a un servidor VTP en un mismo
-dominio. Se dan por,•
-•
-•
-•
-El nombre de dominio VTP ha cambiado.
-El switch recibe un summary advertisement con una configuración de revisión más alta.
-El switch ha sido reiniciado.
-Modos VTP:
-• VTP Server:
-• Notifican la información VLAN del dominio VTP a los otros switches en el mismo dominio VTP.
-• Almacenan la información de VLANs de todo el dominio en la NVRAM.
-• Pueden crear, eliminar o renombrar VLANs.
-• VTP Cliente:
-• Funcionan igual que un VTP Server.
-• No pueden crear, eliminar o renombrar VLANs.
-• Almacena la información en la vlan database.
-• Cuando se reinicia se envia un requerimiento a un VTP server para actualizar la información de
-configuración de VLANs/
-• VTP Transparente:
-• Reenvia las notificaciones VTP de los VTP clientes y VTP servers.
-• No participan en un dominio VTP.
-• Pueden crear, eliminar o renombrar VLANs, pero se almacenan localmente(NVRAM).
-• VTP Pruning:
-• Aumenta el ancho de banda disponible restringiendo tráfico broadcast, multicast e unicast
-producido por un dominio VTP a los enlaces trunk que el tráfico utiliza para alcanzar dispositivos
-destinos.
-VTP configuración por defecto
-•
-•
-•
-•
-•
-VTP version = 1
-VTP Domain Name = null
-VTP mode = Server
-Config Revision = 0
-VLANs = 1
-Configuración VTP:
-•
-•
-•
-•
-Todos los switches tienen que estar en configuración por defecto.
-La misma contraseña VTP debe ser configurada en todos los swtiches del dominio VTP.
-Todos los switches deben tener la misma versión de VTP.
-VTP solo se intercambia en los puertos trunk.
-VTP Servers:
-•
-•
-•
-•
-•
-•
-•
-Siempre reiniciar el número de revisión.
-Configurar el switch en modo VTP Server.
-Configurar al menos 2 VTP servers.
-Configurar un dominio VTP.
-Los nombres de dominio en diferentes servidores tienen que ser los mismos. Son sensitivos a las mayúsculas y
-minúsculas.
-Crear las VLANs despúes de que se han habilitado VTP y el VTP server.
-Las VLANs creadas antes de crear el VTP server son eliminadas.
-S1#configure terminal
-S1(config)#vtp domain [name]
-S1(config)#vtp mode server
-S1(config)#vtp version 1S1(config)#exit
-S1#show vtp status
-Luego añadir VLANs a su gusto.
-VTP Clients:
-•
-•
-•
-•
-Configurar el switch en modo VTP Client.
-Configurar trunks
-Conectar al VTP Server.
-Configurar puertos de acceso.
-S1#configure terminal
-S1(config)#vtp mode client
-S1(config)#exit
-S1#show vtp status
-Resolución de problemas VTP
-•
-•
-•
-•
-Versiones VTP incompatibles
-Contraseñas VTP diferentes
-Modo VTP incorrecto
-Todos los switches son configurados como clientes.
+- Permite propagar configuraciones de VLANs a otros switches en la red.
+- Solo soporta VLANs de rango normal (ID 1-1005).
+- Varios tipos de VTP:
+    * VTP Server: Distribuye y sincroniza información de VLANs a los VTP clientes.
+    * VTP Cliente
+    * VTP Transparente
+- No funciona si los enlaces trunk en una red de switches que soporta VTP no 
+están activos.
+
+**Beneficios de VTP**
+- Configuración de VLANs consistente a través de la red.
+- Monitoreo y seguimiento de las VLANs.
+- Configuración dinámica Trunk cuando las VLANs son añadidas a la red.
+
+**Componentes del VTP**
+- Dominio VTP:
+    * Consiste en uno o más switches interconectados que comparten los mismos 
+    detalles de configuración de VLANs utilizando notificaciones VTP.
+    * Permite limitar la extención en la cual las cambios de configuración son 
+    propagados en la red si un error ocurre.
+- Notificaciones VTP:
+    * Sistema jerárquico de notificaciones para distribuir y sincronizar 
+    configuraciones de VLANs en un mismo dominio VTP.
+    * Trama VTP: Imbuida en el campo de DATA de una trama normal de capa 2. 
+    Contiene los siguientes campos:
+        - Nombre de dominio.
+        - Tamaño del nombre de dominio.
+        - Versión.
+        - Número de revisión de la configuración.
+            - Determina si la información de configuración recibido desde otro 
+            swtich VTP es más reciente que la información de configuración 
+            almacenada.
+            - Valor de 32 bits que indica el nivel de revisión de una trama VTP.
+            - Valor por defecto es 0.
+            - Cada vez que una VLAN es añadida o eliminada, el número de revisión
+             se incrementa.
+            - Cada dispositivo revisa su propia revisión de configuración VTP.
+            - El cambio de nombre de dominio reinicia el contador del numero de 
+            revisión de configuración VTP.
+    * Las notificaciones se envia a una dirección multicast que representa al 
+    dominio.
+    * 3 tipos de notificaciones:
+        - Summary Advertisement:
+            - Contiene el nombre de dominio, el actual número de revisión y 
+            otros detalles VTP.
+            - Enviados cada 5 minutos por un VTP server o cliente, o 
+            inmediatamente un cambio ocurra.
+        - Subset Advertisement: Contiene información de VLANs y vienen luego de 
+        un summary advertisement que responde a un request advertisement del 
+        cliente, se dan por, 
+            - Crear o eliminar VLANs.
+            - Suspender o activar VLANs.
+            - Cambiar el nombre de una VLAN.
+            - Cambiar el MTU de una VLAN.
+        - Request Advertisement: Enviados para requerir información VTP a un servidor
+        VTP en un mismo dominio. Se dan por,
+            - El nombre de dominio VTP ha cambiado.
+            - El switch recibe un summary advertisement con una configuración de
+             revisión más alta.
+            - El switch ha sido reiniciado.
+
+**Modos VTP**
+- VTP Server:
+    * Notifican la información VLAN del dominio VTP a los otros switches en el 
+    mismo dominio VTP.
+    * Almacenan la información de VLANs de todo el dominio en la NVRAM.
+    * Pueden crear, eliminar o renombrar VLANs.
+- VTP Cliente:
+    * Funcionan igual que un VTP Server.
+    * No pueden crear, eliminar o renombrar VLANs.
+    * Almacena la información en la vlan database.
+    * Cuando se reinicia se envia un requerimiento a un VTP server para actualizar
+     la información de configuración de VLANs.
+- VTP Transparente:
+    * Reenvia las notificaciones VTP de los VTP clientes y VTP servers.
+    * No participan en un dominio VTP.
+    * Pueden crear, eliminar o renombrar VLANs, pero se almacenan localmente(NVRAM).
+- VTP Pruning:
+    * Aumenta el ancho de banda disponible restringiendo tráfico broadcast, 
+    multicast e unicast producido por un dominio VTP a los enlaces trunk que el 
+    tráfico utiliza para alcanzar dispositivos destinos.
+
+**VTP configuración por defecto**
+- VTP version = 1
+- VTP Domain Name = null
+- VTP mode = Server
+- Config Revision = 0
+- VLANs = 1
+
+**Configuración VTP**
+- Todos los switches tienen que estar en configuración por defecto.
+- La *MISMA CONTRASEÑA* VTP debe ser configurada en todos los swtiches del dominio VTP.
+- Todos *los switches deben tener la MISMA VERSIÓN de VTP*.
+- VTP solo se intercambia en los puertos trunk.
+
+**VTP Servers**
+- Siempre reiniciar el número de revisión.
+- Configurar el switch en modo VTP Server.
+- Configurar al menos 2 VTP servers.
+- Configurar un dominio VTP.
+- Los nombres de dominio en diferentes servidores tienen que ser los mismos. 
+*Son sensitivos a las mayúsculas y minúsculas*.
+- Crear las VLANs despúes de que se han habilitado VTP y el VTP server.
+- Las VLANs creadas antes de crear el VTP server son eliminadas.
+
+        S1#configure terminal
+        S1(config)#vtp domain [name]
+        S1(config)#vtp mode server
+        S1(config)#vtp version 1
+        S1(config)#exit
+        S1#show vtp status
+
+- Luego añadir VLANs a su gusto.
+
+**VTP Clients**
+- Configurar el switch en modo VTP Client.
+- Configurar trunks
+- Conectar al VTP Server.
+- Configurar puertos de acceso.
+
+        S1#configure terminal
+        S1(config)#vtp mode client
+        S1(config)#exit
+        S1#show vtp status
+
+**Resolución de problemas VTP**
+- Versiones VTP incompatibles.
+- Contraseñas VTP diferentes.
+- Modo VTP incorrecto.
+- Todos los switches son configurados como clientes.
+
 Módulo 5: Spanning Tree Protocol
 Redundancia:
 •

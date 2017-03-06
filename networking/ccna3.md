@@ -652,333 +652,299 @@ están activos.
 - Modo VTP incorrecto.
 - Todos los switches son configurados como clientes.
 
-Módulo 5: Spanning Tree Protocol
-Redundancia:
-•
-•
-•
-Mejora la disponibilidad de la red implementando rutas alternativas añadiendo equipo y cableado.
-Se implementa en la capa de distribución y core.
-Loops Capa 2:
-• Inundación infinita de broadcast ethernet por no contar con TTL en dos o más switches. Las tramas
-broadcast se reenvian a todos los puertos excepto el puerto que las originó consumiendo ancho de banda.
-• Dúplicación de tramas unicast al ser enviada por más de un camino, cuando no se conoce el destino en la
-tabal mac del switch.
-Spanning Tree Protocol(STP)
-•
-•
-•
-•
-Asegura una sola ruta lógica entre todos los destino de una red bloqueando intencionalmente rutas redundantes que
-puedan causar un loop.
-Un puerto bloqueado es cuando se previene que ingrese o envié tráfico, salvo que el tráfico sean BPDU.
-STP se recalcula cada vez que un camino lógico no este disponible.
-Utiliza una dirección de multicast para comunicarse con otros swtich, los switches no configurados con multicast
-descartan el BPDU.
-Algoritmo STP
-•
-•
-Designa y utiliza un switch como root bridge para calcular todas las rutas posibles.
-Todos los switches envian tramas BPDU para determinar que switch tiene el menor BID(Bridge ID), el menor BID
-automáticamente lo convierte en root bridge.
-• BPDU:•
-•
-•
-•
-•
-•
-Trama intercambiada por los switches para información STP.
-Contiene el BID que identifica el switch que envió el BPDU.
-Enviados cada 2 segundos después del booteo de un switch
-BID:
-• Contiene la prioridad.
-• MAC del switch que envió el BPDU.
-• ID opcional del sistema extendido.
-• El BID es determinado por la combinación de estos valores.
-Cada switch utiliza el STA para determinar el camino más corto hacia el switch y el puerto a bloquear, mientras
-tanto todo el tráfico se bloquea hasta que se terminé el STA.
-Una vez determinado cuáles son las rutas permitidas, configura los puertos del switch en diferentes roles, los cuales
-describen la relación en la red con el root bridge y si estos están permitidos de reenviar tráfico.
-• Puertos raíz: Puertos de switch más cercanos al root bridge.
-• Puertos designados: Todos los que no son puertos raíz que son permitidos de reeniar tráfico en la red.
-• Puertos no designados: Todos los puertos configurados para estar en un estado de bloque y prevenir loops.
-Root Bridge
-•
-•
-•
-•
-Punto de referencia para todos cáculos del STA determinando las rutas óptimas hacia el root bridge para determinar
-las rutas redundantes a bloquear.
-Cada switch se considera a sí mismo root bridge cuando bootea.
-Campos del BID:
-• Bridge Priority:
-• Extendend System ID:
-• MAC Address
-Costo de la ruta:
-• Determinada por la suma de los costos de los puertos hacia el root bridge.
-• La ruta con menor costo es la considerada y todas las demás bloqueadas.
-• DIBUJO de los COSTOS DEL PUERTO 5.2.1.4
-• S#configure terminal
-• S(config)#interface [type][number]
-• S(config)$spannin-tree cost [cost-number]
-BPDU
-•
-•
-Contiene 12 campos distintos utilizados para definir la ruta y la prioridad que STP utiliza para determinar el root
-bridge.
-Cuando un switch adyascente recibe una trama BPDU, se comparan los root ID del BPDU con el root ID local. Si
-el root ID en el BPDU es menor que el root ID local, el switch actualiza el root ID local y el nuevo BPDU con el
-root ID menor. Estos mensajes sirven para indicar que el nuevo root bridge de la red. También, el costo de la ruta es
-actualizado indicando que tan lejos se encuentra el root bridge. Si el root ID del BPDU es menor que el root ID
-local, el BPDU se descarta.
-BID(Bridge ID)
-•
-•
-•
-Usado para determinar el root bridge.
-Valor por defecto 24576.
-El campo BID en una trama BPDU contiene
-• Bridge priority
-• Valor para influenciar al switch para que se convierta en root bridge.
-• El switch con menor prioridad será el root bridge.
-• La prioridad del rango es de 1, 65536.
-• Extended system IDSe añade al valor bridge priority en el BID para identificar la VLAN y el BID en una trama
-BPDU.
-Dirección MAC.
-• Cuando 2 switches son configurados con la misma prioridad y tiene el mismo extended system
-ID, la MAC con el menor valor hexadecial se convierte en el root bridge.
-•
-•
-Port Roles:
-•
-•
-Port
-El rol del puerto se determina según donde se encuentra el root bridge y el algoritmo STA.
-Tipos
-• Root Port:
-• Es el puerto con el camino más corto hacia el root bridge. Si 2 o más puertos tienen el mismo
-costo hacia el root bridge, se considera la prioridad del puerto o el port id(Número de interface).
-El port id es añadido a la prioridad del puerto: 128.1 seria prioridad 128 con port id igual a 1.
-• Existe en non-root bridges y es el puerto del switch.
-• Reenvian tráfico hacia el root bridge.
-• Solamente un root port por switch.
-• Designated Port:
-• Existe en el root y non-root bridges.
-• Todos los puertos del root bridge son puertos designados.
-• En non-root bridges, un puerto designado es un puerto del switch que recibe y reenvia tramas a
-hacia el root bridge.
-• Solamente un puerto designado es permitido por segmento.
-• Non-designated Port:
-• Es un puerto del switch que está bloqueado, no reenvia tramas ni llena la MAC address table con
-direcciones de origen.
-• Disabled Port:
-• Es un puerto del switch que ha sido apagado administrativamente.
-• No funciona en el proceso STP.
-States:
-VER
-5
-posibles
-estados
-GRÁFICO
-del
-puerto
-DE
-del
-switch
-en
-el
-PUEROTS
-intercambio
-de
-las
-tramas
-DE
-BPDU timers:
-•
-•
-•
-•
-El tiempo que un puerto está en un tipo de estado depende de los BPDU timers.
-Solo el root bridge puede alterar los timers BPDU.
-Spanning tree puede tener un diametro máximo de 7 debido a los BPDU timers.
-Tipos:
-• Hello time: Tiempo entre cada BPDU se envia a un puerto, 2s por defecto.
-• Forward delay: Tiempo en el estado listening y learning, son 15s por defecto para cada estado.
-• Maximun age: Tiempo máximo para almacenar información BPDU, es 20s por defecto.
-Convergencia STP: 3 pasos
-•
-•
-•
-Elegir al root bridge:
-Elegir a los root ports:
-Elegir a los designated y non-designated ports:
-Variantes STP
-BPDU.
-ESTADO.•
-Cisco
-•
-PVST
-•
-•
-•
-•
-•
-•
-•
-PVST+
-•
-•
-Cada VLAN es una instancia del spanning tree.
-Permite balance de carga de capa 2.
-Incluye extenciones STP
-Soporta ISL y 802.1Q trunking protocol
-Incluye extensiones STP
-Rapid-PVST+
-•
-IEEE Estandar
-• RSTP
-•
-•
-•
-Utiliza ISL trunking protocol
-Convergencia más rápida que 802.1D
-Convergencia más rápida que 802.1D
-Implementaciones genericas de extenciones STP de Cisco.
-MSTP
-•
-Varias
-VLans
-pueden
-ser
-asociadas
-a
-una
-misma
-instancia
-del
-spanning
-tree.
-PVST+
-• Una instancia STP por VLAN, da como resultado que pueda existir varios root bridge
-por la cantidad de VLAN's.
-• Bridge ID: 8bytes.
-• Bridge priority: 4 bits.
-• Extended system ID: 12 bits o también llamado VLAN ID.
-• MAC Address: 6 bytes.
-• Es el modo por defecto de los switches CISCO.
-• Configuración de root bridges para cada VLAN:
-• S(config)#spanning-tree vlan [vlan-ID] root primary
-• S(config)#spanning-tree vlan [vlan-ID] root secondary
-RSTP
-•
-•
-•
-•
-•
-Evolución del estándar 802.1D
-No tiene un estado de puerto bloqueado, los estado son:
-• Discarding.
-• Learning.
-• Forwarding
-Características:
-• Protocolo de preferencia para evitar loops de capa 2.
-• Provee rápida convergencia después de una falla de un switch, enlace o puerto.
-• No es compatible con las extensiones de Cisco, UplinkFast, BackboneFast.
-• Define diferentes estados de puertos y roles.
-• Mantiene compatibilidad hacia atrás con STP.
-• La mayoría de parámetros entre STP y RSTP se mantienen.
-• Mismo formato BPDU que STP.
-RSTP BPDU
-• Utiliza la version 2 de RSTP.
-• 3 paquetes BPDU sin respuesta se considera como pérdida de conectividad.
-• Se envian paquetes RSTP BPDU cada 6 segundos.
-• Permite detectar fallas en la red rápidamente.
-Edge Port:
-• Nunca estarán conectados hacia otro switch, siempre a host terminales.Cambia inmediatamente a estado forwarding.
-Funciona como un puerto configurado con Cisco PortFast.
-Configuración:
-• s(config-if)#spanning-tree portfast
-• Non Edge Port:
-• Siempre están conectados hacia otro switch.
-• Tipos de Enlace:
-• Categoriza cada puerto que participa en RSTP.
-• El tipo de enlace puede predeterminar el papel activo que juega el puerto en su forma actual por
-la transición inmediata al estado de envío, si se cumplen ciertas condiciones.
-• Root ports, alternate y backup ports no utilizan el tipo de enlace.
-• Designated ports utilizan el parámetro de tipo de enlace.
-• Port States:
-• Causados por un cambio en la topología.
-• Un rol de puerto puede transitar varios estados de puerto.
-• Tipos:
-• Discarding:
-• Previene reenviar tramas de datos.
-• Puede darse en un estado activo de la topología.
-• Puede darse en la convergencia de la topología.
-• Learning:
-• Acepta tramas para llenar la tabla MAC para limitar el envio de tramas unicast
-desconocidas.
-• Puede darse en un estado activo de la topología.
-• Puede darse en la convergencia de la topología.
-• Forwarding:
-• Puede darse solo en un estado activo de la topología.
-• Ocurre después del "proposal & agreement process".
-GRAFICO PORT STATES DE STP VS RSTP.
-• Port Roles:
-• Define el propósito del puerto del switch y como maneja las tramas de datos.
-• Tipos:
-• Root port:
-• Puerto escogido que dirige al root bridge.
-• Un solo root port por switch.
-• Designated port:
-• Recibe tramas de un segmento que son destinados al root bridge.
-• Solo un puerto designado por segmento.
-• Tiene estado forwarding.
-• Alternate port:
-• Ofrece una ruta alterna hacia el root bridge.
-• Tiene un estado de discarding por defecto.
-• Se presentan en switches no designados como root bridge.
-• Se activan si la ruta designada falla.
-Revisar Proposal and Agreement Process 5.4.6
-•
-•
-•
-Rapid-PVST+
-• Mantiene una instancia de STP por cada VLAN.
-• Los parámetros de Rapid-PVST+ son activados cuando se encuentra un loop de STP.
-• Configuración:
-• S(config)#spanning-tree mode rapid-pvst
-• S(config-if)#spanning-tree link-type point-to-point
-• S#clear spanning-tree detected-protocols
-• Si un puerto local configurado con Rapida-PVST+ se convierte en puerto designado, y el puerto remoto
-tbn está configurado en un estado punto-a-punto; entonces el puerto local pasa a un estado de forwarding.Buenas prácticas STP:
-• Generalmente escoger el switch más poderoso para root bridge.
-• Localizar el root bridge entre los server - routers - clientes para optimización de cantidad de saltos.
-• Para cada VLAN, configurar el root bridge y el backup root bridge utilizando prioridades bajas.
-• Mantener una estructura jerarquica y conocer los enlaces redundantes para saber que puertos bloquear.
-• Minimizar el número de puertos bloqueados.
-• Utilizar VTP pruning para minimizar puertos bloueados
-• No deshabilitar STP, no utiliza muchos recursos.
-• Mantener tráfico de los usuario fuera de la VLan administrativa.
-• VLan 1 sirve como VLan administrativo, donde todos los switches acceden en la misma subred, un loop en la
-Vlan 1 puede dar de baja a toda la red.
-Resolución de problemas STP:
-• Errores ocurren cuando se envian BPDU sin respuesta hacia puertos bloqueados, con el resultado que el puerto
-bloqueado se cambia a un estado de forwarding, generando un loop de capa 2.
-• Resolución:
-• Conocer la topología.
-• Conocer el lugar del root bridge.
-• Conocer el lugar de los puertos designados y bloqueados.
-• Error de configuración PortFast al ser configurado en un puerto que se conecta a otro switch.
-• PortFast cambia de un estado bloqueado a forwarding automáticamente.
-• Resolución:
-• No configurar PortFast en puertos que se conectan a otros switches.
-• Esperar que el STP bloquee el puerto.
-• Error por tamaño de la red
-Módulo
-•
-•
-6:
-Inter-Vlan Routing:
+# Spanning Tree Protocol
+**Redundancia**
+- Mejora la disponibilidad de la red implementando rutas alternativas añadiendo 
+equipo y cableado.
+- Se implementa en la capa de distribución y core.
+- Loops Capa 2:
+    * Inundación infinita de broadcast ethernet por no contar con TTL en dos o
+     más switches. Las tramas broadcast se reenvian a todos los puertos excepto
+     el puerto que las originó consumiendo ancho de banda.
+    * Dúplicación de tramas unicast al ser enviada por más de un camino, cuando
+     no se conoce el destino en la tabla mac del switch.
+
+**Spanning Tree Protocol(STP)**
+- Asegura una sola ruta lógica entre todos los destino de una red bloqueando 
+intencionalmente rutas redundantes que puedan causar un loop.
+- Un puerto bloqueado es cuando se previene que ingrese o envié tráfico, salvo 
+que el tráfico sean BPDU.
+- STP se recalcula cada vez que un camino lógico no está disponible.
+- Utiliza una dirección de multicast para comunicarse con otros swtich, los 
+switches no configurados con multicast descartan el BPDU.
+
+**Algoritmo STP**
+- Designa y utiliza un switch como root bridge para calcular todas las rutas 
+posibles.
+- Todos los switches envian tramas BPDU para determinar que switch tiene el menor
+ BID(Bridge ID), el menor BID automáticamente lo convierte en root bridge.
+    * BPDU:
+        - Trama intercambiada por los switches para información STP.
+        - Contiene el BID que identifica el switch que envió el BPDU.
+        - Enviados cada 2 segundos después del booteo de un switch.
+    * BID:
+        - Contiene la prioridad.
+        - MAC del switch que envió el BPDU.
+        - ID opcional del sistema extendido.
+        - El BID es determinado por la combinación de estos valores.
+- Cada switch utiliza el STA para determinar el camino más corto hacia el switch
+ y el puerto a bloquear, mientras tanto todo el tráfico se bloquea hasta que se
+ terminé el STA.
+- Una vez determinado cuáles son las rutas permitidas, configura los puertos 
+del switch en diferentes roles, los cuales describen la relación en la red con 
+el root bridge y si estos están permitidos de reenviar tráfico.
+    * Puertos raíz: Puertos de switch más cercanos al root bridge.
+    * Puertos designados: Todos los que no son puertos raíz que son permitidos 
+    de reenviar tráfico en la red.
+    * Puertos no designados: Todos los puertos configurados para estar en un 
+    estado de bloque y prevenir loops.
+
+**Root Bridge**
+- Punto de referencia para todos cáculos del STA determinando las rutas óptimas
+ hacia el root bridge para determinar las rutas redundantes a bloquear.
+- Cada switch se considera a sí mismo root bridge cuando bootea.
+- Campos del BID:
+    * Bridge Priority.
+    * Extendend System ID.
+    * MAC Address.
+- Costo de la ruta:
+    * Determinada por la suma de los costos de los puertos hacia el root bridge.
+    * La ruta con menor costo es la considerada y todas las demás bloqueadas.
+
+### DIBUJO de los COSTOS DEL PUERTO 5.2.1.4
+
+        S#configure terminal
+        S(config)#interface [type][number]
+        S(config)$spannin-tree cost [cost-number]
+
+**BPDU**
+- Contiene 12 campos distintos utilizados para definir la ruta y la prioridad 
+que STP utiliza para determinar el root bridge.
+- Cuando un switch adyascente recibe una trama BPDU, se comparan los root ID del
+ BPDU con el root ID local. Si el root ID en el BPDU es menor que el root ID 
+local, el switch actualiza el root ID local y el nuevo BPDU con el  root ID menor.
+ Estos mensajes sirven para indicar que el nuevo root bridge de la red. 
+También, el costo de la ruta es actualizado indicando que tan lejos se encuentra
+ el root bridge. Si el root ID del BPDU es menor que el root ID local, el BPDU
+ se descarta.
+
+**BID(Bridge ID)**
+- Usado para determinar el root bridge.
+- Valor por defecto 24576.
+- El campo BID en una trama BPDU contiene:
+    * Bridge priority.
+        - Valor para influenciar al switch para que se convierta en root bridge.
+        - El switch con menor prioridad será el root bridge.
+        - La prioridad del rango es de 1, 65536.
+    * Extended system ID
+        - Se añade al valor bridge priority en el BID para identificar la VLAN 
+        y el BID en una trama BPDU.
+    * Dirección MAC.
+        - Cuando 2 switches son configurados con la misma prioridad y tiene el 
+        mismo extended system ID, la MAC con el menor valor hexadecial se 
+        convierte en el root bridge.
+
+**Port Roles**
+- El rol del puerto se determina según donde se encuentra el root bridge y el 
+algoritmo STA.
+- Tipos:
+    * Root Port:
+        • Es el puerto con el camino más corto hacia el root bridge. Si 2 o más
+         puertos tienen el mismo costo hacia el root bridge, se considera la 
+        prioridad del puerto o el port id(Número de interface).
+        El port id es añadido a la prioridad del puerto: 128.1 seria prioridad 
+        128 con port id igual a 1.
+        • Existe en non-root bridges y es el puerto del switch.
+        • Reenvian tráfico hacia el root bridge.
+        • Solamente un root port por switch.
+    * Designated Port:
+        • Existe en el root y non-root bridges.
+        • Todos los puertos del root bridge son puertos designados.
+        • En non-root bridges, un puerto designado es un puerto del switch que 
+        recibe y reenvia tramas a hacia el root bridge.
+        • Solamente un puerto designado es permitido por segmento.
+    * Non-designated Port:
+        • Es un puerto del switch que está bloqueado, no reenvia tramas ni llena
+         la MAC address table con direcciones de origen.
+    * Disabled Port:
+        • Es un puerto del switch que ha sido apagado administrativamente.
+        • No funciona en el proceso STP.
+
+**Port States**
+- 5 posibles estados del puerto del switch en el intercambio de las tramas BDPU
+
+| State | Purporse  | 
+|-------|:---------:| 
+| Listening | Processing BPDUs and building active topology |
+| Learning | Building bridging tables; no forwarding of data |
+| Forwarding | Sending and receiving data; normal operation |
+| Blocking | A port that would cause a loop if it were sending data, so it is only receiving BPDUs, until a topology change removes the possibility of a loop |
+| Disabled | A port that is manually isolated from the network |
+
+
+**BPDU timers**
+- El tiempo que un puerto está en un tipo de estado depende de los BPDU timers.
+- Solo el root bridge puede alterar los timers BPDU.
+- Spanning tree puede tener un diametro máximo de 7 debido a los BPDU timers.
+- Tipos:
+    * Hello time: Tiempo entre cada BPDU se envia a un puerto, *`2s` por defecto*.
+    * Forward delay: Tiempo en el estado listening y learning, son *`15s` por defecto para cada estado*.
+    * Maximun age: Tiempo máximo para almacenar información BPDU, es *`20s` por defecto*.
+
+**Convergencia STP: 3 pasos**
+- Elegir al root bridge.
+- Elegir a los root ports,
+- Elegir a los designated y non-designated ports.
+
+**Variantes STP**
+- Cisco
+    * PVST
+        - Utiliza ISL trunking protocol
+        - Cada VLAN es una instancia del spanning tree.
+        - Permite balance de carga de capa 2.
+        - Incluye extenciones STP
+    * PVST+
+        - Soporta ISL y 802.1Q trunking protocol
+        - Incluye extensiones STP
+    * Rapid-PVST+
+        - Convergencia más rápida que 802.1D
+- IEEE Estandar
+    * RSTP
+        - Convergencia más rápida que 802.1D
+        - Implementaciones genericas de extenciones STP de Cisco.
+    * MSTP
+        - Varias VLAN's pueden ser asociadas a una misma instancia del spanning tree.
+
+    * PVST+
+        - Una instancia STP por VLAN, da como resultado que pueda existir varios
+         root bridge  por la cantidad de VLAN's.
+        - Bridge ID: 8bytes.
+            * Bridge priority: 4 bits.
+            * Extended system ID: 12 bits o también llamado VLAN ID.
+            * MAC Address: 6 bytes.
+        - Es el modo por defecto de los switches CISCO.
+        - Configuración de root bridges para cada VLAN:
+
+        S(config)#spanning-tree vlan [vlan-ID] root primary
+        S(config)#spanning-tree vlan [vlan-ID] root secondary
+
+**RSTP**
+- Evolución del estándar 802.1D
+- No tiene un estado de puerto bloqueado, los estado son:
+    * Discarding.
+    * Learning.
+    * Forwarding.
+- Características:
+    * Protocolo de preferencia para evitar loops de capa 2.
+    * Provee rápida convergencia después de una falla de un switch, enlace o puerto.
+    * No es compatible con las extensiones de Cisco, UplinkFast, BackboneFast.
+    * Define diferentes estados de puertos y roles.
+    * Mantiene compatibilidad hacia atrás con STP.
+    * La mayoría de parámetros entre STP y RSTP se mantienen.
+    * Mismo formato BPDU que STP.
+- RSTP BPDU
+    * Utiliza la version 2 de RSTP.
+    * 3 paquetes BPDU sin respuesta se considera como pérdida de conectividad.
+    * Se envian paquetes RSTP BPDU cada 6 segundos.
+    * Permite detectar fallas en la red rápidamente.
+- Edge Port:
+    * Nunca estarán conectados hacia otro switch, siempre a host terminales.
+    * Cambia inmediatamente a estado forwarding.
+    * Funciona como un puerto configurado con Cisco PortFast.
+    * Configuración:
+
+        s(config-if)#spanning-tree portfast
+
+- Non Edge Port:
+    * Siempre están conectados hacia otro switch.
+- Tipos de Enlace:
+    * Categoriza cada puerto que participa en RSTP.
+    * El tipo de enlace puede predeterminar el papel activo que juega el puerto
+     en su forma actual por la transición inmediata al estado de envío, si se 
+    cumplen ciertas condiciones.
+    * Root ports, alternate y backup ports no utilizan el tipo de enlace.
+    * Designated ports utilizan el parámetro de tipo de enlace.
+- Port States:
+    * Causados por un cambio en la topología.
+    * Un rol de puerto puede transitar varios estados de puerto.
+    * Tipos:
+        - Discarding:
+            * Previene reenviar tramas de datos.
+            * Puede darse en un estado activo de la topología.
+            * Puede darse en la convergencia de la topología.
+        - Learning:
+            • Acepta tramas para llenar la tabla MAC para limitar el envio de 
+            tramas unicast desconocidas.
+            • Puede darse en un estado activo de la topología.
+            • Puede darse en la convergencia de la topología.
+        - Forwarding:
+            • Puede darse solo en un estado activo de la topología.
+            • Ocurre después del "proposal & agreement process".
+
+### GRAFICO PORT STATES DE STP VS RSTP.
+
+- Port Roles:
+    * Define el propósito del puerto del switch y como maneja las tramas de datos.
+    * Tipos:
+        - Root port:
+            * Puerto escogido que dirige al root bridge.
+            * Un solo root port por switch.
+        - Designated port:
+            * Recibe tramas de un segmento que son destinados al root bridge.
+            * Solo un puerto designado por segmento.
+            * Tiene estado forwarding.
+        - Alternate port:
+            * Ofrece una ruta alterna hacia el root bridge.
+            * Tiene un estado de discarding por defecto.
+            * Se presentan en switches no designados como root bridge.
+            * Se activan si la ruta designada falla.
+    Revisar Proposal and Agreement Process 5.4.6
+
+**Rapid-PVST+**
+- Mantiene una instancia de STP por cada VLAN.
+- Los parámetros de Rapid-PVST+ son activados cuando se encuentra un loop de STP.
+- Configuración:
+
+        S(config)#spanning-tree mode rapid-pvst
+        S(config-if)#spanning-tree link-type point-to-point
+        S#clear spanning-tree detected-protocols
+
+- Si un puerto local configurado con Rapida-PVST+ se convierte en puerto 
+designado, y el puerto remoto tbn está configurado en un estado punto-a-punto; 
+entonces el puerto local pasa a un estado de forwarding.
+
+**Buenas prácticas STP**
+- Generalmente escoger el switch más poderoso para root bridge.
+- Localizar el root bridge entre los server - routers - clientes para 
+optimización de cantidad de saltos.
+- Para cada VLAN, configurar el root bridge y el backup root bridge utilizando 
+prioridades bajas.
+- Mantener una estructura jerarquica y conocer los enlaces redundantes para 
+saber que puertos bloquear.
+- Minimizar el número de puertos bloqueados.
+- Utilizar VTP pruning para minimizar puertos bloueados.
+- No deshabilitar STP, no utiliza muchos recursos.
+- Mantener tráfico de los usuario fuera de la VLan administrativa.
+- VLan 1 sirve como VLAN administrativa, donde todos los switches acceden en la
+ misma subred, un loop en la VLAN 1 puede dar de baja a toda la red.
+
+**Resolución de problemas STP**
+- Errores ocurren cuando se envian BPDU sin respuesta hacia puertos bloqueados, 
+con el resultado que el puerto bloqueado se cambia a un estado de forwarding, 
+generando un loop de capa 2.
+- Resolución:
+    * Conocer la topología.
+    * Conocer el lugar del root bridge.
+    * Conocer el lugar de los puertos designados y bloqueados.
+- Error de configuración PortFast al ser configurado en un puerto que se conecta
+ a otro switch.
+- PortFast cambia de un estado bloqueado a forwarding automáticamente.
+- Resolución:
+    * No configurar PortFast en puertos que se conectan a otros switches.
+    * Esperar que el STP bloquee el puerto.
+    * Error por tamaño de la red
+
+# Inter-Vlan Routing
 Tradicionalmente el enrutamiento es conectando diferentes interfaces físicas del enrutador a diferentes puertos del
 switch en modo acceso definiendo diferentes VLAN's a cada puerto.
 Router-on-a-stick:

@@ -21,6 +21,7 @@ the other one(*demo_net*) has connection to the outside world. Finally, there's
 segment has two virtual ethernet interfaces which their final end are connected 
 to a Linux bridge *nsbr0*  and to the *server* respectively.
 
+
 ## Docker0
 
 *docker0* is just a Linux bridge with no modifications whatsoever managed by the 
@@ -32,12 +33,22 @@ of networks: bridge(docker0), none, and host.
 - *Bridge* is just a Linux bridge where all the containers if no network is specified 
 are allocated to it. The bridge network is customisable, but the docker daemon needs
 to be restarted. Options of this bridge can be found in `docker network inspect bridge`.
+
+| Options          | Values           |
+| ---------------- | :--------------: |
+| com.docker.network.bridge.default_bridge | true or false |
+| com.docker.network.bridge.enable_icc | true or false |
+| com.docker.network.bridge.enable_ip_masquerade | true or false |
+| com.docker.network.bridge.host_binding_ipv4 | ipv4 to bind |
+| com.docker.network.bridge.name | bridge namde |
+| com.docker.network.driver.mtu | mtu |
+
 - *None* disables network capabilities to containers; in other words, it's attached to itself.
 - *Host* adds a container on the host’s network stack.
 
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-        add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) stable"
-        apt update && apt install docker-ce -y
+> Installing and configuring docker is not part of this doc.
+
+
         systemctl stop docker
         dockerd --icc=false &
         docker network create -o "com.docker.network.kbridge.enable_icc=false" --internal demo_internal

@@ -22,17 +22,17 @@ segment has two virtual ethernet interfaces which their final end are connected
 to a Linux bridge *nsbr0*  and to the *server* respectively.
 
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) stable"
-apt update && apt install docker-ce -y
-systemctl stop docker
-dockerd --icc=false &
-docker network create -o "com.docker.network.kbridge.enable_icc=false" --internal demo_internal
-docker network create demo_net
-docker run -itd --name=c_in_bridge busybox
-docker run -itd --name=c_in_internal --network=demo_internal busybox
-docker run -itd --name=c_in_net --network=demo_net busybox
-docker run -itd --name=web_in_all httpd:2.4
-docker network connect bridge web_in_all
-docker network connect demo_internal web_in_all
-docker network connect demo_net web_in_all
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) stable"
+        apt update && apt install docker-ce -y
+        systemctl stop docker
+        dockerd --icc=false &
+        docker network create -o "com.docker.network.kbridge.enable_icc=false" --internal demo_internal
+        docker network create demo_net
+        docker run -itd --name=c_in_bridge busybox
+        docker run -itd --name=c_in_internal --network=demo_internal busybox
+        docker run -itd --name=c_in_net --network=demo_net busybox
+        docker run -itd --name=web_in_all httpd:2.4
+        docker network connect bridge web_in_all
+        docker network connect demo_internal web_in_all
+        docker network connect demo_net web_in_all

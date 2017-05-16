@@ -467,8 +467,8 @@ DTP.
 Añadir una VLAN:
 
         S1#configure terminal
-        S1(config)#vlan vlan id
-        S1(config-vlan)#name vlan name
+        S1(config)#vlan [vlan id]
+        S1(config-vlan)#name [vlan_name]
         S1(config-vlan)#end
 
 Verificación:
@@ -480,7 +480,7 @@ Asignar una VLAN a un puerto:
         S1#configure terminal
         S1(config)#interface [type][slot/number]
         S1(config-if)#switchport mode access
-        S1(config-if)#switchport access mode vlan [number]
+        S1(config-if)#switchport access vlan [number]
 
 Elimina una VLAN a un puerto:
 

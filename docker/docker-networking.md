@@ -160,6 +160,8 @@ Let's disable inter-container communication (`--icc=false`) and create some cont
         $docker run -itd --name=c_in_net busybox
         $docker run -itd --name=web_in_all httpd:2.4
 
+        # Inspecting iptables and interfaces after docker is installed
+        # Output has been cut
         $sudo iptables -L FORWARD -v
 
         $sudo iptables -t nat -L POSTROUTING
@@ -209,15 +211,222 @@ help you identifying the interface index, because each veth pair is created sequ
         NIC statistics:
              peer_ifindex: 11
 
+## User-defined Networks
+
+> In this doc we are not explaining about docker swarm(vxlan) at all. Please
+> refer to the [official documentation](https://docs.docker.com/engine/userguide/networking/get-started-overlay/) 
+> to learn more.
+
+Docker provides something called user-defined networks which are Linux bridges with
+DNS resolution without having to configure your own DNS server. It has several 
+network drivers: bridge, overlay, macvlan; and supports network plugins to build
+your own network driver. Also, It permits to connect several containers to 
+different networks(including the docker0 network). As you can connect a container
+to several networks, its external connectivity is provided via the first 
+non-internal network, in lexical order.
+
+> Docker has an option for linking containers in `docker0`, with user-defined 
+> network I don't see a reason to keep using it. Also, linking is not supported
+> in user-defined networks.
+
+
 Now, let's create the docker networks.
 
-        docker network create -o "com.docker.network.kbridge.enable_icc=false" --internal demo_internal
-        docker network create demo_net
-        docker network connect bridge web_in_all
-        docker network connect demo_internal web_in_all
-        docker network connect demo_net web_in_all
+        $docker network create -o "com.docker.network.kbridge.enable_icc=false" --internal demo_internal
+
+        $docker network create demo_net
+
+        $docker network ls
+        NETWORK ID          NAME                DRIVER              SCOPE
+        77283fff31b2        bridge              bridge              local
+        22abcb2ef140        demo_internal       bridge              local
+        119bb8423775        demo_net            bridge              local
+        e2dfddfecaaa        host                host                local
+        11899b8b3162        none                null                local
+
+        # Inspecting iptables after creating the networks 
+        # Output has been cut
+        $ sudo iptables -L -v
+        Chain FORWARD (policy DROP 0 packets, 0 bytes)
+         pkts bytes target     prot opt in     out     source               destination
+            0     0 DOCKER-ISOLATION  all  --  any    any     anywhere             anywhere
+            0     0 DOCKER     all  --  any    docker0  anywhere             anywhere
+            0     0 ACCEPT     all  --  any    docker0  anywhere             anywhere             ctstate RELATED,ESTABLISHED
+            0     0 ACCEPT     all  --  docker0 !docker0  anywhere             anywhere
+            0     0 DOCKER     all  --  any    br-119bb8423775  anywhere             anywhere
+            0     0 ACCEPT     all  --  any    br-119bb8423775  anywhere             anywhere             ctstate RELATED,ESTABLISHED
+            0     0 ACCEPT     all  --  br-119bb8423775 !br-119bb8423775  anywhere             anywhere
+            0     0 ACCEPT     all  --  br-119bb8423775 br-119bb8423775  anywhere             anywhere
+            0     0 ACCEPT     all  --  br-22abcb2ef140 br-22abcb2ef140  anywhere             anywhere
+            0     0 DROP       all  --  docker0 docker0  anywhere             anywhere
+
+        Chain OUTPUT (policy ACCEPT 158 packets, 19432 bytes)
+         pkts bytes target     prot opt in     out     source               destination
+
+        Chain DOCKER (2 references)
+         pkts bytes target     prot opt in     out     source               destination
+
+        Chain DOCKER-ISOLATION (1 references)
+         pkts bytes target     prot opt in     out     source               destination
+            0     0 DROP       all  --  br-119bb8423775 docker0  anywhere             anywhere
+            0     0 DROP       all  --  docker0 br-119bb8423775  anywhere             anywhere
+            0     0 DROP       all  --  any    br-22abcb2ef140 !172.18.0.0/16        anywhere
+            0     0 DROP       all  --  br-22abcb2ef140 any     anywhere            !172.18.0.0/16
+            0     0 RETURN     all  --  any    any     anywhere             anywhere
+
+        $sudo iptables -t nat -L -v
+        Chain POSTROUTING (policy ACCEPT 2 packets, 138 bytes)
+         pkts bytes target     prot opt in     out     source               destination
+            0     0 MASQUERADE  all  --  any    !br-119bb8423775  172.19.0.0/16        anywhere
+            0     0 MASQUERADE  all  --  any    !docker0  172.17.0.0/16        anywhere
+
+        Chain DOCKER (2 references)
+         pkts bytes target     prot opt in     out     source               destination
+            0     0 RETURN     all  --  br-119bb8423775 any     anywhere             anywhere
+            0     0 RETURN     all  --  docker0 any     anywhere             anywhere
+
+
+`br-22abcb2ef140` is the bridge for `demo_internal` in my environment. The bridge 
+name follows the syntax `br-$(network-id)`. The network id can be obtained by 
+`docker network ls` command or `docker network inspect [network-name]`. The same applies
+for `demo_net` with its bridge `br-119bb8423775`.
+We can see that two new networks has been created. Also, there's one new rule in 
+the `FORWARD` chain, and there are two new rules in the `DOCKER-ISOLATION` chain. 
+In addition, there's one rule added in the `POSTROUTING` chain and one in the `DOCKER`(PREROUTING) chain 
+for `demo_net`. This mean that `demo_net` has NAT capabilities to communicate to the outside world
+,but `demo_internal` has not. `DOCKER-ISOLATION` chain isolates completely 
+the `demo_internal` network, but for `docker_net` means there's no communication to the docker0 bridge. In the
+ FORWARD chain we see that both networks have accepted connections to communicate
+ between containers. In the case of `demo_net` it also has communication to the 
+outside world.
+
+We can attach/dettach running containers to several networks. At this moment, both 
+networks are down, because there's now device connected to the bridge.
+
+        $ip link show
+        13: br-22abcb2ef140: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default
+            link/ether 02:42:0b:7a:5f:f6 brd ff:ff:ff:ff:ff:ff
+        15: br-119bb8423775: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default
+            link/ether 02:42:89:3b:e5:2e brd ff:ff:ff:ff:ff:ff
+
+To connect the containers to the different networks use `docker network connect [network_name] [container]`.
+
+        $docker network connect bridge web_in_all
+        $docker network connect demo_internal web_in_all
+        $docker network connect demo_internal c_in_internal
+        $docker network connect demo_net web_in_all
+        $docker network connect demo_net c_in_net
+        $docker network disconnect bridge c_in_internal
+        $docker network disconnect bridge c_in_internal
+        
+        # Inspecting the networks
+        # Output has been cut
+        $docker network inspect bridge
+        [
+            {
+                "Name": "bridge",
+                "Id": "b04143660337bc477e4d2b420f3a799340ae2a40c9585ceb81410bf630b6a49c",
+                "Driver": "bridge",
+                "Internal": false,
+                "Containers": {
+                    "270dca5b1f6715487b9b8471bdd2c1490c89defb7f311f3d5ccbd03e59687c5e": {
+                        "Name": "web_in_all",
+                        "EndpointID": "32147fecafb40f926d3193f4a0d61e628530b71c7c2006523e70a27d36fddfd1",
+                        "MacAddress": "02:42:ac:11:00:02",
+                        "IPv4Address": "172.17.0.2/16",
+                        "IPv6Address": ""
+                    },
+                    "81533d0311f8d634ce84f6da6a13d0745c14a6c13150750f6563674584259175": {
+                        "Name": "c_in_bridge",
+                        "EndpointID": "d459ffd8177b85b5de687f5fd48e2a1b8c8b2c991af213b24f23532f64bd3ee6",
+                        "MacAddress": "02:42:ac:11:00:05",
+                        "IPv4Address": "172.17.0.5/16",
+                        "IPv6Address": ""
+                    },
+                },
+            }
+        ]
+
+        $ docker network inspect demo_internal
+        [
+            {
+                "Name": "demo_internal",
+                "Id": "22abcb2ef14008d075290e75bf4f25463c5849617cc736c8b0196de0cabcb86f",
+                "Driver": "bridge",
+                "Internal": true,
+                "Attachable": false,
+                "Containers": {
+                    "270dca5b1f6715487b9b8471bdd2c1490c89defb7f311f3d5ccbd03e59687c5e": {
+                        "Name": "web_in_all",
+                        "EndpointID": "9e22fbea0191ee648f4f4553d995fc3d10e20d821200efd01b248c77c9592c45",
+                        "MacAddress": "02:42:ac:12:00:02",
+                        "IPv4Address": "172.18.0.2/16",
+                        "IPv6Address": ""
+                    },
+                    "56a0bb976ced986f3b7889f5dbcc5f5a3449f61b858b1857103b5c2287b5c40e": {
+                        "Name": "c_in_internal",
+                        "EndpointID": "1a8300e23320560e64bf984b08e98810427a88ae9b25d1c1bccce86876e3ddad",
+                        "MacAddress": "02:42:ac:12:00:03",
+                        "IPv4Address": "172.18.0.3/16",
+                        "IPv6Address": ""
+                    }
+                },
+                "Options": {
+                    "com.docker.network.kbridge.enable_icc": "false"
+                },
+            }
+        ]
+
+        $ docker network inspect demo_net
+        [
+            {
+                "Name": "demo_net",
+                "Id": "119bb8423775647a339c3c4cfbb29f30c4c99ad1e66a0606b2799c7c6bf840a4",
+                "Internal": false,
+                "Containers": {
+                    "270dca5b1f6715487b9b8471bdd2c1490c89defb7f311f3d5ccbd03e59687c5e": {
+                        "Name": "web_in_all",
+                        "EndpointID": "4c69c773b612af883268b91037f2bc2280c4f01f8bb01f86b06635b479595e1e",
+                        "MacAddress": "02:42:ac:13:00:02",
+                        "IPv4Address": "172.19.0.2/16",
+                        "IPv6Address": ""
+                    },
+                    "a9294f31b168363cd99e3ec1a4b5a125d06dabfa2422f84fcc66b57033bc556c": {
+                        "Name": "c_in_net",
+                        "EndpointID": "b651d1ba56524e10302a716930e6da42b1997bdd7b371a276dff6cd2fc5b5ca3",
+                        "MacAddress": "02:42:ac:13:00:03",
+                        "IPv4Address": "172.19.0.3/16",
+                        "IPv6Address": ""
+                    }
+                },
+                "Options": {},
+            }
+        ]
+
+`web_in_all` is the only container connected to all the networks. 
+
+        $ ip route show
+        default via 192.168.122.1 dev ens3
+        172.17.0.0/16 dev docker0  proto kernel  scope link  src 172.17.0.1
+        172.18.0.0/16 dev br-22abcb2ef140  proto kernel  scope link  src 172.18.0.1
+        172.19.0.0/16 dev br-119bb8423775  proto kernel  scope link  src 172.19.0.1
+        192.168.122.0/24 dev ens3  proto kernel  scope link  src 192.168.122.194
+
+        $ ip link show
+        13: br-22abcb2ef140: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default
+            link/ether 02:42:0b:7a:5f:f6 brd ff:ff:ff:ff:ff:ff
+        15: br-119bb8423775: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default
+            link/ether 02:42:89:3b:e5:2e brd ff:ff:ff:ff:ff:ff
+
+Both bridges now are up after we connect containers to them. There are also 
+two rules added to the routing table as directly connected.
+
+
+#Network namespaces
 
 
 ## Bibliography
+
 [1] http://stackoverflow.com/a/34497614/3621080
+
 [2] https://github.com/moby/moby/issues/20224

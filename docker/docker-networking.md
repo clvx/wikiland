@@ -422,7 +422,98 @@ Both bridges now are up after we connect containers to them. There are also
 two rules added to the routing table as directly connected.
 
 
-#Network namespaces
+## Network Namespaces
+
+Provides isolation of the system resources associated with networking: network 
+devices, IPv4 and IPv6 protocol stacks, IP routing tables, firewalls, 
+the /proc/net directory, the /sys/class/net directory, port numbers (sockets), 
+and so on. This means that each network namespace has its own networking stack.
+
+It uses a virtual device(veth) pair to create a tunnel
+for communication between namespaces. It always comes in pair, with one end in 
+the root namespace and the other end in a namespace.
+
+The device is created in whatever namespace is current in.  If a device does not
+ belong to the current namespace, it becomes invisible.
+
+In the case of docker containers, each container has their own network stack. 
+The network namespace is located in /proc/$pid/ns/ for each process:
+
+        $DOCKER_ID=`docker ps -aqf "name=web_in_all"`
+        /proc/`docker inspect --format='{{.State.Pid}}' $(DOCKER_ID)`/ns/net
+
+To configure a network namespace by hand we'll use the `ip` command.
+
+        $ sudo ip netns add demo_ns
+
+        $ sudo ip netns ls
+        demo_ns
+
+        $mount | grep demo_ns
+        nsfs on /run/netns/demo_ns type nsfs (rw)
+        nsfs on /run/netns/demo_ns type nsfs (rw)
+
+We have created and listed a new namespace; however, `ip` mounts a a virtual 
+filesystem named nsfs to keep `demo_ns` alive; otherwise, the namespace would have ended 
+when `ip` command terminated executing without mounting the network namespace.
+
+Let's create a veth pair device and send one of them to `demo_ns` 
+
+        $ sudo ip link add v-eth0 type veth peer name v-peer0
+        $ip link show
+        18: v-peer0@v-eth0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+            link/ether 26:46:1c:69:75:42 brd ff:ff:ff:ff:ff:ff
+        19: v-eth0@v-peer0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+            link/ether aa:92:de:a0:77:a8 brd ff:ff:ff:ff:ff:ff
+
+        $sudo ip link set v-peer0 netns demo_ns
+        $ip link show
+        19: v-eth0@if18: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+            link/ether aa:92:de:a0:77:a8 brd ff:ff:ff:ff:ff:ff link-netnsid 4
+
+Notice that only v-eth0 remains in the global namespace.
+
+        $ sudo ip addr add 10.100.0.1/24 dev v-eth0
+        $ sudo ip link set v-eth0 up
+        $ sudo ip netns exec demo_ns ip addr add 10.100.0.2/24 dev v-peer0
+        $ sudo ip netns exec demo_ns ip link set v-peer0 up
+        $ sudo ip netns exec demo_ns ip link set lo up
+        $ sudo ip netns exec demo_ns ip addr show
+        1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+            link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+            inet 127.0.0.1/8 scope host lo
+               valid_lft forever preferred_lft forever
+            inet6 ::1/128 scope host
+               valid_lft forever preferred_lft forever
+        18: v-peer0@if19: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+            link/ether 26:46:1c:69:75:42 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+            inet 10.100.2.0/24 scope global v-peer0
+               valid_lft forever preferred_lft forever
+            inet6 fe80::2446:1cff:fe69:7542/64 scope link
+               valid_lft forever preferred_lft forever
+        $ip addr show v-eth0
+        19: v-eth0@if18: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+            link/ether aa:92:de:a0:77:a8 brd ff:ff:ff:ff:ff:ff link-netnsid 4
+            inet 10.100.0.1/24 scope global v-eth0
+               valid_lft forever preferred_lft forever
+            inet6 fe80::a892:deff:fea0:77a8/64 scope link
+               valid_lft forever preferred_lft forever
+
+`ip netns exec [net_ns]` permits executing commands inside a network namespace. 
+In this case we have configure `v-eth0` in the global namespace and `v-peer0` inside
+`demo_ns`.
+
+        $ ping 10.100.0.2 -c 2
+        PING 10.100.0.2 (10.100.0.2) 56(84) bytes of data.
+        64 bytes from 10.100.0.2: icmp_seq=1 ttl=64 time=0.094 ms
+        64 bytes from 10.100.0.2: icmp_seq=2 ttl=64 time=0.057 ms
+
+        $ sudo ip netns exec demo_ns ping 10.100.0.1 -c 2
+        PING 10.100.0.1 (10.100.0.1) 56(84) bytes of data.
+        64 bytes from 10.100.0.1: icmp_seq=1 ttl=64 time=0.057 ms
+        64 bytes from 10.100.0.1: icmp_seq=2 ttl=64 time=0.064 ms
+
+We have verified there's connection inside the tunnel.
 
 
 ## Bibliography
@@ -430,3 +521,7 @@ two rules added to the routing table as directly connected.
 [1] http://stackoverflow.com/a/34497614/3621080
 
 [2] https://github.com/moby/moby/issues/20224
+
+[3] namespaces(7)
+
+[4] https://github.com/torvalds/linux/blob/master/fs/nsfs.c

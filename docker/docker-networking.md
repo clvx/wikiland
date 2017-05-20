@@ -211,6 +211,37 @@ help you identifying the interface index, because each veth pair is created sequ
         NIC statistics:
              peer_ifindex: 11
 
+
+We can verify communication in `docker0`
+
+        $ docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' c_in_bridge
+        172.17.0.3
+
+        $ docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' web_in_all
+        172.17.0.2
+
+        $ docker exec c_in_bridge ping 172.17.0.1 -c 2
+        PING 172.17.0.1 (172.17.0.1): 56 data bytes
+        64 bytes from 172.17.0.1: seq=0 ttl=64 time=0.604 ms
+        64 bytes from 172.17.0.1: seq=1 ttl=64 time=0.367 ms
+
+        $ docker exec c_in_bridge ping 172.17.0.2 -c 2
+        PING 172.17.0.2 (172.17.0.2): 56 data bytes
+        --- 172.17.0.2 ping statistics ---
+        2 packets transmitted, 0 packets received, 100% packet loss
+
+        $ docker exec c_in_bridge ping web_in_all -c 2
+        ping: bad address 'web_in_all'
+
+        $ docker exec c_in_bridge ping example.com -c 2
+        PING example.com (93.184.216.34): 56 data bytes
+        64 bytes from 93.184.216.34: seq=0 ttl=52 time=25.110 ms
+        64 bytes from 93.184.216.34: seq=1 ttl=52 time=31.700 ms
+
+As `docker0` is run with inter-container communication disabled, there's no communication 
+between containers. Also, there's no dns, so no resolution using other container names. 
+Communication to the outside world is permited.
+
 ## User-defined Networks
 
 > In this doc we are not explaining about docker swarm(vxlan) at all. Please
@@ -421,6 +452,66 @@ To connect the containers to the different networks use `docker network connect 
 Both bridges now are up after we connect containers to them. There are also 
 two rules added to the routing table as directly connected.
 
+        # Exploring demo_internal
+        $ docker inspect -f '{{.NetworkSettings.Networks.demo_internal.IPAddress}}' web_in_all
+        172.18.0.2
+
+        $ docker inspect -f '{{.NetworkSettings.Networks.demo_internal.IPAddress}}' c_in_internal
+        172.18.0.3
+
+        $ docker exec c_in_internal ping 172.18.0.1 -c 2
+        PING 172.18.0.1 (172.18.0.1): 56 data bytes
+        64 bytes from 172.18.0.1: seq=0 ttl=64 time=0.111 ms
+        64 bytes from 172.18.0.1: seq=1 ttl=64 time=0.295 ms
+
+        $ docker exec c_in_internal ping 172.18.0.3 -c 2
+        PING 172.18.0.3 (172.18.0.3): 56 data bytes
+        64 bytes from 172.18.0.3: seq=0 ttl=64 time=0.102 ms
+        64 bytes from 172.18.0.3: seq=1 ttl=64 time=0.272 ms
+
+        $ docker exec c_in_internal ping web_in_all -c 2
+        PING web_in_all (172.18.0.2): 56 data bytes
+        64 bytes from 172.18.0.2: seq=0 ttl=64 time=0.099 ms
+        64 bytes from 172.18.0.2: seq=1 ttl=64 time=0.618 ms
+
+        $ docker exec c_in_internal ping example.com -c 2
+        ping: bad address 'example.com'
+
+Verifying connectivity in the demo_internal network we notice connection between 
+container even though inter-container communication has been disabled. NICE BUG YOU 
+HAVE THERE DOCKER. In addition, in a user-defined network we can use the container 
+name just fine to communicate between containers. As `demo_internal` is an internal 
+network, there's no connection to the outside world.
+
+        # Exploring demo_internal
+        $ docker inspect -f '{{.NetworkSettings.Networks.demo_net.IPAddress}}' c_in_net
+        172.19.0.3
+
+        $ docker inspect -f '{{.NetworkSettings.Networks.demo_net.IPAddress}}' web_in_all
+        172.19.0.2
+
+        $ docker exec c_in_net ping 172.19.0.1 -c 2
+        PING 172.19.0.1 (172.19.0.1): 56 data bytes
+        64 bytes from 172.19.0.1: seq=0 ttl=64 time=0.115 ms
+        64 bytes from 172.19.0.1: seq=1 ttl=64 time=0.269 ms
+
+        $ docker exec c_in_net ping 172.19.0.2 -c 2
+        PING 172.19.0.2 (172.19.0.2): 56 data bytes
+        64 bytes from 172.19.0.2: seq=0 ttl=64 time=0.105 ms
+        64 bytes from 172.19.0.2: seq=1 ttl=64 time=0.374 ms
+
+        $ docker exec c_in_net ping web_in_all -c 2
+        PING web_in_all (172.19.0.2): 56 data bytes
+        64 bytes from 172.19.0.2: seq=0 ttl=64 time=0.059 ms
+        64 bytes from 172.19.0.2: seq=1 ttl=64 time=0.276 ms
+
+        $ docker exec c_in_net ping example.com -c 2
+        PING example.com (93.184.216.34): 56 data bytes
+        64 bytes from 93.184.216.34: seq=0 ttl=52 time=25.192 ms
+        64 bytes from 93.184.216.34: seq=1 ttl=52 time=29.856 ms
+
+Two main differences of `demo_net` between `demo_internal`. First, it has inter-container 
+communication enabled(so, no bug). Second, `demo_net` has connection to the outside world.
 
 ## Network Namespaces
 

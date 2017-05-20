@@ -1,4 +1,4 @@
----
+
 
 # Docker Networking
 
@@ -440,7 +440,7 @@ In the case of docker containers, each container has their own network stack.
 The network namespace is located in /proc/$pid/ns/ for each process:
 
         $DOCKER_ID=`docker ps -aqf "name=web_in_all"`
-        /proc/`docker inspect --format='{{.State.Pid}}' $(DOCKER_ID)`/ns/net
+        /proc/`docker inspect --format='{{.State.Pid}}' ${DOCKER_ID}`/ns/net
 
 To configure a network namespace by hand we'll use the `ip` command.
 
@@ -471,7 +471,7 @@ Let's create a veth pair device and send one of them to `demo_ns`
         19: v-eth0@if18: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
             link/ether aa:92:de:a0:77:a8 brd ff:ff:ff:ff:ff:ff link-netnsid 4
 
-Notice that only v-eth0 remains in the global namespace.
+Notice that only `v-eth0` remains in the global namespace.
 
         $ sudo ip addr add 10.100.0.1/24 dev v-eth0
         $ sudo ip link set v-eth0 up
@@ -498,10 +498,14 @@ Notice that only v-eth0 remains in the global namespace.
                valid_lft forever preferred_lft forever
             inet6 fe80::a892:deff:fea0:77a8/64 scope link
                valid_lft forever preferred_lft forever
+        $ ip route
+        default via 192.168.122.1 dev ens3
+        10.100.0.0/24 dev v-eth0  proto kernel  scope link  src 10.100.0.1
 
 `ip netns exec [net_ns]` permits executing commands inside a network namespace. 
 In this case we have configure `v-eth0` in the global namespace and `v-peer0` inside
-`demo_ns`.
+`demo_ns`. Also notice that the host creates a route for 10.100.0.0, because it's 
+directed connected device. Iptables has no changes at all.
 
         $ ping 10.100.0.2 -c 2
         PING 10.100.0.2 (10.100.0.2) 56(84) bytes of data.
@@ -516,6 +520,183 @@ In this case we have configure `v-eth0` in the global namespace and `v-peer0` in
 We have verified there's connection inside the tunnel.
 
 
+### Let's get weird
+
+First of all, we are going to link `web_in_all` network namespace to `/var/run/netns`, 
+so it can be managed by the `ip` command.
+
+        $DOCKER_ID=`docker ps -aqf "name=web_in_all"`
+        $sudo ln -s /proc/`docker inspect --format='{{.State.Pid}}' ${DOCKER_ID}`/ns/net /var/run/netns/${DOCKER_ID}
+        $sudo ip netns ls
+        270dca5b1f67 (id: 0)
+        demo_ns (id: 4)
+
+
+Then, we are going to install and configure a Linux bridge named `nsbr0`. This 
+bridge will have two veth connected to it. One is a new veth pair which one end is
+going to be in the `demo_ns` network namespace. The other veth pair will be a 
+tunnel connected  to the `web_in_all` network namespace.
+
+        $sudo apt install bridge-utils -y
+
+        $sudo ip link add v-eth1 type veth peer name v-peer-1
+        $sudo ip link add v-ethc type veth peer name v-peer-c
+
+        $sudo brctl addbr nsbr0
+        $ sudo brctl addif nsbr0 v-eth1
+        $ sudo brctl addif nsbr0 v-ethc
+
+        $ip link show
+        20: nsbr0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+            link/ether 26:bc:6a:17:76:9a brd ff:ff:ff:ff:ff:ff
+        23: v-peer-1@v-eth1: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+            link/ether 6a:56:f9:8a:22:c2 brd ff:ff:ff:ff:ff:ff
+        24: v-eth1@v-peer-1: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop master nsbr0 state DOWN mode DEFAULT group default qlen 1000
+            link/ether b2:9f:3c:ba:0c:97 brd ff:ff:ff:ff:ff:ff
+        25: v-peer-c@v-ethc: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+            link/ether a6:4c:ea:4e:f0:a1 brd ff:ff:ff:ff:ff:ff
+        26: v-ethc@v-peer-c: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop master nsbr0 state DOWN mode DEFAULT group default qlen 1000
+
+        $sudo ip link set v-peer-c netns ${DOCKER_ID}
+        $sudo ip link set v-peer-1 netns demo_ns
+        $sudo ip link set v-eth1 up
+        $sudo ip link set v-ethc up
+        $sudo ip link set nsbr0 up
+        $sudo ip netns exec ${DOCKER_ID} ip link set v-peer-c up
+        $sudo ip netns exec ${DOCKER_ID} ip addr add 10.200.0.3/24 dev v-peer-c
+        $sudo ip addr add 10.200.0.1/24 dev nsbr0
+        $sudo ip netns exec demo_ns ip addr add 10.200.0.2/24 dev v-peer-1
+        $sudo ip netns exec demo_ns ip link set v-peer-1 up
+
+After configuring our new bridge and veths devices. Let's explore how's the view 
+in each network namespace:
+
+        $ip link show 
+        20: nsbr0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+            link/ether 26:bc:6a:17:76:9a brd ff:ff:ff:ff:ff:ff
+        24: v-eth1@if23: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master nsbr0 state UP mode DEFAULT group default qlen 1000
+            link/ether b2:9f:3c:ba:0c:97 brd ff:ff:ff:ff:ff:ff link-netnsid 4
+        26: v-ethc@if25: <BROADCAST,MULTICAST> mtu 1500 qdisc noqueue master nsbr0 state UP mode DEFAULT group default qlen 1000
+            link/ether 26:bc:6a:17:76:9a brd ff:ff:ff:ff:ff:ff link-netnsid 0
+
+        $ ip route
+        10.200.0.0/24 dev nsbr0  proto kernel  scope link  src 10.200.0.1
+
+Now we have `v-eth1` and `v-ethc` connected to `nsbr0`. and ip route shows a new route
+for `10.200.0.1`.
+
+        $ sudo ip netns exec ${DOCKER_ID} ip link show
+        1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1
+            link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+        6: eth0@if7: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default
+            link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+        8: eth1@if9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default
+            link/ether 02:42:ac:12:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+        10: eth2@if11: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default
+            link/ether 02:42:ac:13:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+        25: v-peer-c@if26: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+            link/ether a6:4c:ea:4e:f0:a1 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+
+        $ sudo ip netns exec ${DOCKER_ID} ip route
+        default via 172.17.0.1 dev eth0
+        10.200.0.0/24 dev v-peer-c  proto kernel  scope link  src 10.200.0.3 linkdown
+
+`web_in_all` has a new veth and a new route for 10.200.0.0.
+
+        $sudo iptables -t nat -A POSTROUTING -s 10.200.0.0/24 -o ens3 -j MASQUERADE
+        $sudo iptables -A FORWARD -o nsbr0 -j ACCEPT
+        $sudo iptables -A FORWARD -i nsbr0 -j ACCEPT
+        $sudo ip netns exec demo_ns ip route add default via 10.200.0.1
+
+        $ sudo ip netns exec demo_ns  ip link show
+        1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1
+            link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+        18: v-peer0@if19: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+            link/ether 26:46:1c:69:75:42 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+        23: v-peer-1@if24: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+            link/ether 6a:56:f9:8a:22:c2 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+
+        $ sudo ip netns exec demo_ns ip route
+        default via 10.200.0.1 dev v-peer-1
+        10.100.0.0/24 dev v-peer0  proto kernel  scope link  src 10.100.0.2
+        10.200.0.0/24 dev v-peer-1  proto kernel  scope link  src 10.200.0.2
+
+We added a rule in the `POSTROUTING` chain to map demo_ns connections to nsbr0 ip address. Then, 
+a default route has been added to demo_ns to route connections to the outside world.
+Nevertheless, *which dns resolver is using demo_ns?*. Remember that a network namespace
+just gives a new IP stack. A dns resolver is not part of the network namespace. 
+Well, when you execute `ip netns exec [net_ns]` you are still using the global
+mount namespace, so the files you are using are the same as the root filesystem.
+In other words, `/etc/resolv.conf` is the same for all the namespaces created with
+the `ip netns` command. However, with `ip netns` you might use a different resolver 
+creating a new file in /etc/netns/[netns_name]/resolv.conf for each network namespace.
+
+        $ echo '127.0.0.1 mytest' | sudo tee -a /etc/hosts
+        127.0.0.1 mytest
+        $ sudo ip netns exec demo_ns ping mytest -c 2
+        PING mytest (127.0.0.1) 56(84) bytes of data.
+        64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.070 ms
+        64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.086 ms
+
+As you can see, we hava added a new entry in `/etc/hosts`. Pinging from `demo_ns` 
+resulted succesful for `mytest`.
+
+        $sudo mkdir -p /etc/netns/demo_ns/
+        $echo '127.0.0.1 myns' | sudo tee -a /etc/netns/demo_ns/hosts
+
+        $ sudo ip netns exec demo_ns ping myns -c 2
+        PING myns (127.0.0.1) 56(84) bytes of data.
+        64 bytes from myns (127.0.0.1): icmp_seq=1 ttl=64 time=0.072 ms
+        64 bytes from myns (127.0.0.1): icmp_seq=2 ttl=64 time=0.093 m
+
+        $ sudo ip netns exec demo_ns ping mytest -c 2
+        ping: unknown host mytest
+
+If we add a new resolver for the `demo_ns` we notice that `mytest` is no longer 
+reachable, but `myns` is. Just remember that `/etc/netns/[netns_name]/` only works
+with the `ip netns` command.
+
+What about giving web_in_all exit to the outside world by nsbr0.
+
+        # Some output has been cut
+
+        $sudo ip netns exec ${DOCKER_ID} ip route add  93.184.216.34/32 via 10.200.0.1
+
+        $sudo ip netns exec ${DOCKER_ID} ip route
+        default via 172.17.0.1 dev eth0
+        10.200.0.0/24 dev v-peer-c  proto kernel  scope link  src 10.200.0.3
+        93.184.216.34 via 10.200.0.1 dev v-peer-c
+
+        $sudo ip netns exec ${DOCKER_ID} ip route get 93.184.216.34
+        93.184.216.34 via 10.200.0.1 dev v-peer-c  src 10.200.0.3
+            cache
+
+        $sudo ip netns exec ${DOCKER_ID} ping 93.184.216.34 -c 2
+        PING 93.184.216.34 (93.184.216.34) 56(84) bytes of data.
+        64 bytes from 93.184.216.34: icmp_seq=1 ttl=52 time=22.9 ms
+        64 bytes from 93.184.216.34: icmp_seq=2 ttl=52 time=33.4 ms
+
+        $sudo ip netns exec ${DOCKER_ID} ping example.com -c 2
+        PING example.com (93.184.216.34) 56(84) bytes of data.
+        64 bytes from 93.184.216.34: icmp_seq=1 ttl=52 time=53.1 ms
+        64 bytes from 93.184.216.34: icmp_seq=2 ttl=52 time=26.5 ms
+
+We added a static route for `example.com` and we verified that is using `nsbr0` 
+as their gateway with `ip route get` command. 
+
+which resolver is using `web_in_all`?  As it uses its own mount namespace, it uses
+ the resolver configured by docker, but you can use a different resolver if you connect 
+to the `web_in_all` network namespace using `ip netns` command and follow correct 
+network configurations.
+
+## Conclusion
+
+- It's better to use user-defined networks to segment, organize and isolate containers.
+- You still can find bugs in Docker, some of them can be confusing.
+- Network namespace provides isolation for network resources.
+- Network namespace is used not only by Docker, but is fundamental in kubernetes, 
+openstack and many others.
+
 ## Bibliography
 
 [1] http://stackoverflow.com/a/34497614/3621080
@@ -525,3 +706,7 @@ We have verified there's connection inside the tunnel.
 [3] namespaces(7)
 
 [4] https://github.com/torvalds/linux/blob/master/fs/nsfs.c
+
+[5] ip-netns(8)
+
+[6] ip-route(8)

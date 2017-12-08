@@ -100,7 +100,7 @@ NOTE: Pressing `<ESC>` will place you in Normal mode or will cancel
      To substitute new for all 'old's on a line type       `:s/old/new/g`
      To substitute phrases between two lines        `:#,#s/old/new/g`
 
-        ∘ Where `#,#` are the line numbers of the range of lines where the substitution is to be done.
+        ∘ Where #,# are the line numbers of the range of lines where the substitution is to be done.
 
      To substitute all occurrences in the file type        `:%s/old/new/g`
      To ask for confirmation each time add 'c'             `:%s/old/new/gc`

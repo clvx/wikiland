@@ -94,4 +94,4 @@
 8. Docker
     1. [Docker Networking](docker/docker-networking)
 9. Vim
-    1. [Vim](vim/vim-tutor)
+    1. [Vim Tutor](vim/vim-tutor)

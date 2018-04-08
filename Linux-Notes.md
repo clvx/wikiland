@@ -1,6 +1,6 @@
-[ How It Works ]
-    test
-[ Logs & More File Management Tools ]
+Logs & More File Management Tools
+=================================
+
     /var/log, system and services log files.
     tail -n # [file], outputs the last n lines of a file
     tail [file], outputs the last 10 lines of a file by default.
@@ -25,7 +25,10 @@
     /var/log/secure – Contains information related to authentication and authorization privileges
     /var/log/wtmp or /var/log/utmp – Contains login records. Using wtmp you can find out who is logged into the system. who command uses this file to display the information.
     /var/log/faillog – Contains user failed login attemps. Use faillog command to display the content of this file.
-[ Root User, Sudo Users And Setting Up Your User Account ]
+
+Root User, Sudo Users And Setting Up Your User Account
+======================================================
+
     sudo, execute a command as the superuser or another user, as specified by the security policy.
     useradd, create a new user or update default new user information.. adds information to /etc/passwd
     visudo, edit the sudoers file. locks the sudoers file against multiple simultaneous edits, provides basic sanity checks, and checks for parse errors.
@@ -33,7 +36,10 @@
     usermod -G [group] [user], adds a group to a user
     userdel -r [user], deletes a user and its files and directories; without -r only deletes the user.
     In Debian, Ubuntu, or Centos the sudo, admin or wheel group is the super user group.
-[ Navigating Linux & The File System ]
+
+Navigating Linux & The File System
+==================================
+
     .file, hidden file
     ls  -la, lists all files in long listing(timestamp, permissions, owner, group).
     cd [directory], changes directory
@@ -51,7 +57,10 @@
     rm -rf, rm -r, removes recursevely everything inside the directory including the directory even if it has files.
     /var, directory for variable data
     /etc, directory for configuration files
-[ File Permissions  ]
+
+File Permissions 
+================
+
     touch [file], creates a file without editing
     ls -al, lists all file in a long listing
     -rw-rw-r--. 1 mike mike   0 nov  9 15:04 my_file
@@ -66,7 +75,9 @@
     - x or 1: executes a file or opens a directory.
     chown -R user.group [directory], changes ownership of a directory
     if a user owns a file or directory, the user can changes permissions of that file or directory.
-[ Cron Jobs ]
+
+Cron Jobs
+=========
            crond - daemon to execute scheduled commands. 
     - stateless, it doesn't save the last time a command has been executed.
     - cron only works if the system is awake. 
@@ -94,15 +105,20 @@
     /etc/{cron.daily, cron.hourly,cron.monthly,cron.weekly}, if you put a script inside of one of these directories, the script will wun automatically according to the directory.
     crontab, is  the  program  used  to install, remove or list the tables used to serve the cron(8) daemon.  Each user can have their own        crontab, and though these are files in /var/spool/cron, they are not intended to be edited directly.
     more info: http://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/
-[ A Look At System Resources With The Linux Top Command ]
+A Look At System Resources With The Linux Top Command
     top, displays linux processes. The top program provides a dynamic real-time view of a running system.  It can display system summary information as well as a list of  processes or threads currently being managed by the Linux kernel.
-[ Basic User Management For Fresh Images/Server Installs ]
+
+Basic User Management For Fresh Images/Server Installs
+======================================================
+
     whoami, changes user
     su, subtitutes user. Without parameters logs as root user
     passwd, changes a user password
     passwd [user], changes a user password, without parameters changes the current user.
 
-[ Finding Files In Linux Using Find, Locate, Whereis, Which and Type ]
+Finding Files In Linux Using Find, Locate, Whereis, Which and Type
+===================================================================
+
     find /etc -name motd, looks for motd in /etc
     find permits to look for files and their attributes.
     find / -name *.c , looks for files which contains any file wich ends with .c
@@ -117,22 +133,34 @@
      whereis [filename], locates source/binary and manuals sections for specified files.
     which filename, returns the pathnames of the files (or links) which would be executed in the current environment.
     type, indicate how each name would be interpreted if used as a command name.
-[ Getting Started With Python 3 ]
+
+Getting Started With Python 3
+=============================
     sudo apt-get install python3, to install python3
-[ Sticky/Repeat Keys and Slow/Bounce Keys Toggle ]
+
+Sticky/Repeat Keys and Slow/Bounce Keys Toggle
+==============================================
     sticky keys, useful for people with inhability to type or having trouble with typing. 
     - sticky key would stick until the next key press happens
     To enable in ubuntu: settings -> universal access -> turn on sticky keys, check in beep when a modifier key is pressed.
     - with this if I press a key it will wait until a next key is pressed. eg. ALT + F4, it will wait for F4. 
     Bounce keys, Ignores fast duplicate keypresses.
     - To enable in ubuntu: settings -> universal access -> turn on bounce keys
-[ Mouse Keys and Onscreen Keyboard ]
+
+Mouse Keys and Onscreen Keyboard
+================================
           System settings -> Universal Access -> Pointing and Clicking ->  Mouse keys, Control the pointer using the keypad.
      System settings -> Universal Access -> Typing -> On screen keyboard, shows a keyboard.
-[ Screen Reader and Screen Magnifier ]
+
+Screen Reader and Screen Magnifier
+==================================
+
     System settings -> Universal Access -> Seeing -> Screen Reader, reads out loud in which desktop context the mouse is. 
      System settings -> Universal Access -> Seeing -> Zoom, enables zoom functions
-[ A Look At VI And Nano Text Editors ]
+
+A Look At VI And Nano Text Editors
+==================================
+
     nano, editor for newcomers
     vi, installed by default
     vi, insert - command - visual modes
@@ -143,7 +171,10 @@
     nano [file], opens a file
     ctrl + k, deletes the whole line in nano.
     ctrl +x, exits a file
-[ Disk Quotas ]
+
+Disk Quotas
+===========
+
     Quota, a user system call interface to restrict how much disk  a particular user or group could have.
     To enable quotas, add usrquota and grpquota to the mount options of the filesystem specified. 
     quotacheck  examines  each filesystem, builds a table of current disk usage, and compares this table against that recorded in the disk quota        file for the filesystem. If any inconsistencies are detected, both the quota file  and  the        current  system  copy  of the incorrect quotas are update.
@@ -151,23 +182,26 @@
     touch /quota.{user,group}
     chmod 600 /quota.{user,group}
     quotacheck -avugm, checks all filesystems in /etc/fstab which it supports quotas for users an groups but not remount them. 
-[ User Quotas ]
+
+User Quotas
+===========
+
     edquota  is  a  quota  editor.
     edquota [user], to add, modify or delete quotas for a user
     repquota -s [filesystem], prints a summary of the disc usage and quotas for the specified file systems. For each user the current number of files and amount of space (in kilobytes) is printed, along with any quota limits set with edquota(8) or setquota(8). In the second column repquota prints two characters marking which limits are exceeded.
     - If user is over his space softlimit or reaches his space hardlimit in case softlimit is        unset, the first character is '+'. Otherwise the character printed is '-'. The second character denotes the  state  of  inode  usage  analogously.
     One way to keep updated user quota information is to run daily(in cron) quotacheck -avugm.
-[ A Look At dselect ]
+A Look At dselect
     dselect,       select operates as a front-end to dpkg(1), the low-level debian package handling tool. It features a full-screen package selections manager with package depends and conflicts resolver. When run with administrator privileges, packages can be installed, upgraded and removed. Vari‐ ous access methods can be configured to retrieve available package version information and installable packages from package repositories.
-[ Which and Whereis ]
+Which and Whereis
     which [command], takes one or more arguments. For each of its arguments it prints to stdout the full path of the executables that would have been executed when this argument had been entered at the shell prompt. It does this by searching for an exe- cutable or script in the directories listed in the environment variable PATH
     whereis [command], locates source/binary and manuals sections for specified files.
-[ Finding Files With Locate ]
+Finding Files With Locate
     locate [pattern],   locate  reads  one or more databases prepared by updatedb(8) and writes file names matching at least one of the PATTERNs to standard output, one per line.
     updatedb,  creates  or  updates  a  database used by locate(1).  If the database already exists, its data is reused to avoid        rereading directories that have not changed.
     -        updatedb is usually run daily by cron(8) to update the default database.
     locate -w|--wholename [command],               Match only the whole path name against the specified patterns.
-[ The Powerful Find Command ]
+The Powerful Find Command
     find searches the directory tree rooted at each given file name by        evaluating the given expression from left to right, according to the rules of precedence (see section OPERATORS), until the        outcome  is  known  (the left hand side is false for and operations, true for or), at which point find moves on to the next file name.
     find . , finds all files in the current path
     find . -name 'cron*', finds all files which starts with cron in the current path.
@@ -179,14 +213,17 @@
     find / -mtime +1, finds everytime in the root filesystem that is modified in the past day.  
     find / -group mygroup, finds all files owned by group mygroup in the root directory.
     find . -sizw 1Mb, finds all files with a 1M size.
-[ wc, split, cat, and diff commands ]
+wc, split, cat, and diff commands
            cat - concatenate files and print on the standard output
     cat file1 file2, concatenates both files. 
            wc - print newline, word, and byte counts for each file.
     split - split a file into pieces. Output  fixed-size  pieces of INPUT to PREFIXaa, PREFIXab, ...; default size is 1000 lines, and default PREFIX is 'x'.  With no INPUT, or when INPUT is -, read standard input.
     split -l 2 [filename], splits a file in a size of 2 line in many file as needed.
     diff - compare files line by line
-[ Streams (stdin, stdout, stderr) and Redirects ]
+
+Streams (stdin, stdout, stderr) and Redirects
+=============================================
+
     Streams: 
         1>filename       # Redirect stdout to file "filename."
       1>>filename       # Redirect and append stdout to file "filename."
@@ -198,9 +235,9 @@
     - bad_command >>filename 2>&1
     -  # Appends both stdout and stderr to the file "filename" ...
     set -o noclobber,  If  set, bash does not overwrite an existing file with the >, >&, and <> redirection operators. This may be overridden                       when creating output files by using the redirection operator >| instead of >.
-[ Pipes ]
+Pipes
     $command 1 | command 2, Pipes, General purpose process and command chaining tool.
-[ grep, egrep, and fgrep ]
+grep, egrep, and fgrep
            grep, egrep, fgrep - print lines matching a pattern
     grep [pattern] [file], searches pattern in a file.
     grep -c [pattern] [file],  Suppress normal output; instead print a count of matching lines for each input file.
@@ -212,7 +249,10 @@
     grep -v [pattern] [file], Invert the sense of matching, to select non-matching lines.
     fgrep, grep -F, Interpret  PATTERN  as  a  list  of  fixed  strings, separated by newlines, any of which is to be matched.
     fgrep, grep -F, Interpret pattern LITERALLY as a list of fixed strings.
-[ Working with Objects ]
+
+Working with Objects
+====================
+
     Object: a data structure to hold methods and data in a logical unit.
     Everything in Python is an object.
     Class, is a template to define the attributes and methods of an object.
@@ -221,10 +261,16 @@
     module, a file containing python code.
     imports automatically from the directory you are in, or must be defined using sys.path if in a different location.
     import sys\n sys.path.append("/path/to/module")\m from module import myfunction
-[ Cut Command ]
+
+Cut Command
+===========
+
     cut - remove sections from each line of files
     cut -f1 -d: /etc/passwd, obtains the first field delimiting each filed with a colon(:).
-[ Disk Partitioning Schemes ]
+
+Disk Partitioning Schemes
+=========================
+
     Setting up your disk layout is going to be infinitely easier during installation than making adjustments afterwards.
     Determine what kind of server or desktop you are building. This will affect the partition layout.
     Desktop build 100gb Disk:
@@ -240,110 +286,179 @@
     - /opt: 10gb
     - /var: 40gb
     - /: 30gb
-[ sed Stream Editor ]
+
+sed Stream Editor
+=================
     sed, A stream editor is used to perform basic text transformations on an input stream (a file or input from a pipeline).
     sed 's/pattern1/pattern2/' file, substitutes pattern1 for pattern2 on stdout.
     sed 's/pattern1/pattern2/w output_file' file, substitutes pattern1 for pattern2 and writes matches substitution to output.txt
     sed '/pattern/w output_file' file, writes all pattern matechs to output_file.
     sed '0,/pattern/s/pattern1/pattern2/' file, looks for the first occurrence of pattern, then subtitutes in that line pattern1 for pattern2.
-[ tee command ]
+
+tee command
+===========
     tee - read from standard input and write to standard output and files
     $cat /etc/shadow | sudo tee ~/shadow_file, takes the cat contents as stdin and writes to ~/shadow_file
     $cat /etc/fstab |  tee -a ~/fstab, takes the cat contents as stdin and appends to ~/fstab
-[ Docker Architecture ]
+
+Docker Architecture
+===================
+
     Docker Architecture: Daemon, client, docker registry
     Docker clients and daemons communicate via sockets or through a RESTful API.
     Containers are isolated, but share OS and, where appropriate, bins/libraries. 
-[ The Docker Hub ]
+
+The Docker Hub
+--------------
+
     Docker Hub, is a public registry/repository that is maintained by Docke containing a large number of images that you can download and use to build containers. 
     Docker hub, http://hub.docker.com
-[ Docker Installation ]
+
+Docker Installation
+-------------------
+
     Installation, sudo apt install docker.io 
-[ Creating Our First Image ]
+
+Creating Our First Image
+------------------------
+
     sudo docker version, print docker information
     sudo docker info, prints information about docker installation.
     sudo docker pull [image], Pull an image or a repository from a Docker registry server
     sudo docker run -i -t /bin/bash, abre una shell en el contenedor
-[ Working With Multiple Images ]
+
+Working With Multiple Images
+----------------------------
+
     sudo docker search [pattern], looks up for an image
-[ Packaging A Customized Container ]
+
+Packaging A Customized Container
+--------------------------------
+
      sudo docker commit -m="commit message" -a="author" [image-id] [image-name], commits changes of an image and publish it.
     sudo docker images, to list the new image created.
     Docker can build images automatically by reading the instructions from a Dockerfile. A Dockerfile is a text document that contains all the commands a user could call on the command line to assemble an image. Using docker build users can create an automated build that executes several command-line instructions in succession
     The docker build command builds an image from a Dockerfile and a context. The build’s context is the files at a specified location PATH or URL. The PATH is a directory on your local filesystem. The URL is a the location of a Git repository.  A context is processed recursively. So, a PATH includes any subdirectories and the URL includes the repository and its submodules.
     sudo docker build -t="ubuntu:latest" . , overrides the ubuntu:latest image with the new variables defined in the Dockerfile located in path '.'
     echo "# This is our custom Dockerfile build for sharing\nFROM ubuntu:latest\nMAINTAINER Clvx <michael.ibarra@gmail.com>\nRUN apt update\nRUN apt install -y ruby ruby-dev" > Dockerfile
-[ Running Container Commands With Docker ]
+
+Running Container Commands With Docker
+--------------------------------------
+
     sudo docker ps, prints which containers are running. 
     sudo docker run -i -t [image] /bin/bash, launchs a docker container with an interactive shell.
     sudo docker run [image] [command], launcha a docker container then runs a command a shuts down.
     sudo docker run -d ubuntu:latest /bin/bash -c "while true; do echo DOCKERMAN; sleep 3; done", launchs a docker container as a daemon then runs a comand.
     sudo docker logs [docker_name], Fetch the logs of a container
     sudo docker stop [docker_name], Stop a running container
-[ Exposing Our Container With Port Redirects ]
+
+Exposing Our Container With Port Redirects
+------------------------------------------
           sudo docker run -d -p [local_port]:[container_port] [image_name], launchs a container as a daemon and redirects a local port to a container port.
-[ Container Snapshots ]
+
+Container Snapshots
+-------------------
+
           Each time you  make changes on a running  container, those changes are made in runtime and not change the container image which the container is based on. If you want to modify a container, you must build a new container based on the image ID of the running ccontainer.
     sudo docker commit [running-container-id] [image_type:version], to commit changes
-[ Attach to a Running Container ]
+
+Attach to a Running Container
+-----------------------------
+
     sudo docker -t -i -d [container_type:container_version] /bin/bash, launchs a container in the background with a shell. 
     sudo docker attach [container_name], attachs to a running container
-[ Removing Images ]
+
+Removing Images
+---------------
     To delete an image, first all the containers depending on an image must be deleted. Then, the image can be deleted. 
     sudo docker ps -a, to list all the created containers.
     sudo docker rm [container_id], to delete a container.
     sudo docker rmi [image_id], to delete an image. Keep in mind that all containers based on the image must be deleted first. 
-[ Directory Structure ]
+
+Directory Structure
+-------------------
     /var/lib/docker, docker variable data
     rm -rf /var/lib/docker/containers/* , to delete all the created containers.
-[ Services That Run on Startup ]
+
+Services That Run on Startup
+----------------------------
     In ~/.bashrc you can add any sbin commands at the end of that file, then you just run a daemon container  with an interactive shell
     #!/bin/bash \nrm -rf /run/httpd/* \nexec /usr/sbin/apachectl -D FOREGROUND, then execute from .bashrc
-[ Pushing Images to Docker Hub ]
+
+Pushing Images to Docker Hub
+----------------------------
+
           sudo docker build -t [user/image_name:image_Version] /path/to/dockerfile, builds an image to support dockerhub
     sudo docker push [user/image_name:image_version], pushes to dockerhub
     Each time an image is pushed, only the images references are uploaded saving bandwith. 
-[ Adding External Content  ]
+
+Adding External Content 
+-----------------------
     Use ADD declaration in the Dockerfile, to add external content to the container.
-[ Image Volume Management ]
+
+Image Volume Management
+------------------------
     sudo docker run -i -t -v [/path/in/host:/path/in/container] [image_name:image_version] /bin/bash, mounts a volumen inside a container
-[ Advanced Container Network Management ]
+
+Advanced Container Network Management
+-------------------------------------
     To change docker network subnet:
     1. Stop docker daemon, sudo service docker stop
     2. Create a new bridge with the desired subnet.
     3. Tell docker to use the new bridge with sudo docker -d -b [new bridge iface] &
-[ Interactive Shell Control ]
+
+Interactive Shell Control
+-------------------------
     sudo docker run -i -t --name [MYCONTAINER] [image_name:image_version] /bin/bash, launchs a container with a specific name
     sudo docker exec -i -t [container_name] [command], attachs a command to be executed inside the container
-[ Previous Container Management ]
+
+Previous Container Management
+-----------------------------
     sudo docker [start|stop|restart] [container_name], starts or stops or restarts a container 
     When you keep working on a container, you are just using the deltas between the container and the image base and not a full ubique image.
-[ Taking Control of Ports ]
+
+Taking Control of Ports
+-----------------------
+
     sudo docker run -i -t -d -P [image_name:image_version] /bin/bash, -P dynamically maps a local port to a fixed port in the container.
     sudo docker run -i -d -p [local_ip_addr:local_port:container_port] [image_name:image_version] /bin/bash,  binds a specific host interface(and ports)  to a container port.
-[ Sharing Container Resources ]
+
+Sharing Container Resources
+---------------------------
     sudo docker run -d -i -t -v [/path/to/volumen] --name [container_name] [image_name:image_version] /bin/bash, launchs a container in background with a volumen mounted.
     sudo docker run -d -i -t --volumes-from [container_name_to_import_volumes] --name [container_name] [image_name:image_version] /bin/bash, launchs a container in background with a volumen mounted from another container.
     Useful when I want to share a directory between many containers. 
-[ Container Linking and Communication ]
+
+Container Linking and Communication
+-----------------------------------
+
     a link allows a source container to provide information about itself to a recipient container
     Docker creates a secure tunnel between the containers that doesn’t need to expose any ports externally on the container. That’s a big benefit of linking: we don’t need to expose the source container.
     Docker exposes connectivity information for the source container to the recipient container in two ways:      Environment variables,     Updating the /etc/hosts file.
     Docker creates several environment variables when you link containers. Docker automatically creates environment variables in the target container based on the --link parameters. It will also expose all environment variables originating from Docker from the source containe
     In the /etc/hosts file you can see two relevant host entries. The first is an entry for the container that uses the Container ID as a host name. The second entry uses the link alias to reference the IP address of the container to link.
     sudo docker run -i -t --name [container_name] --link [container_to_link]:[alias] [image_name:image_version] /bin/bash
-[ Committing a Running Container (Snapshot Images) ]
+
+Committing a Running Container (Snapshot Images)
+------------------------------------------------
+
           sudo docker commit [container_name] [container_name:container_version], creates a new image 
     A difference between commiting with  the commit id over the container name, it's you can only create a new base image with the container name is when the container is running.
-[ Optimizing Our Dockerfile Builds ]
+
+Optimizing Our Dockerfile Builds
+--------------------------------
+
     Each RUN declaration creates a new container to run a command; so, it's better to chain commands per RUN declaration to optimize container creations.
-[ Five Useful Docker CLI Commands ]
+Five Useful Docker CLI Commands
           sudo docker cp [container_name]:[/path/to/file] [/path/to/host], Copy files/folders from a container's filesystem to the host path 
     sudo docker diff [container_name], Inspect changes on a container's filesystem: A for append, C for change, D for delete.
     sudo docker events, Get real time events from the server
     sudo docker history [image], show the history of an image. 
     sudo docker exec -i -t [container_number] [command], executes a command inside a running container.
-[ More Useful Docker CLI Commands ]
+
+More Useful Docker CLI Commands
+-------------------------------
+
     sudo docker info, Display system-wide information
     sudo docker top [container_name], lookups the running processes of a container
     sudo docker kill [container_name], kill a running container.
@@ -351,37 +466,63 @@
     sudo docker unpause [container_name], unpause a container
     sudo docker load < [image_name].tar, sudo docker load -i  [image_name].tar, Loads the contents of a image to make an image.
     sudo docker export [container_name] > [image_name].tar, sudo docker export -o [container_name] [image_name].tar, Stream the contents of a container as an image tar archive
-[ Testing Version Compatibility - Using Tomcat and Java (Part Three) ]
+
+Testing Version Compatibility - Using Tomcat and Java (Part Three)
+------------------------------------------------------------------
+
     sudo docker run -e [ENV_VAR]=[/path/], to pass environment variables to a container
-[ Open Source Philosophy ]
+
+Open Source Philosophy
+----------------------
+
     GNU: Gnus is not unix
     Differs from unix because it's a copy of unix and free
     GPL: the source code remains freely available to anyone who might want it
     GPL: General Public License
-[ Distributions ]
+
+Distributions
+-------------
+
     Distributions: linux kernel + utilities + configurations
     Distribution: Linux kernel + core unix tools + supplemental software + startup scripts + installers
     different types of distributions: desktops, servers, corporate, etc
-[ Embedded Systems ]
+
+Embedded Systems
+----------------
+
     Set-top boxes, smart tv's , networking equipment, navigation equipment(TOM TOM), mobile devices
-[ Desktop Applications  ]
+
+Desktop Applications 
+--------------------
     gnome, kde, lxde, unity, xfce
     widget set: library that handles UI features like menus and dialogue boxes
     common widget set: gtk, kde
     yum install firefox gimp openoffice thunderbird blender audacity pidgin calibre
-[ Server Applications ]
+
+Server Applications
+-------------------
+
     22-ssh-openssh, 23-telnet-telnetd, 25-smtp-postfix, 53-dns-bind, 67-bootp-dnsmasq|dhcp, 80-http-apache, 443-https-apache
-[ Development Languages ]
+
+Development Languages
+----------------------
+
     cathedral model: source code is limited to the developers until the release date
     bazaar model: pretty caothic, devs can bring more perspective to the project. not vertical
     java, c/c++, js, python, ruby, per, php
     compiled, interpreted and assembly languages are some environments a linux admin has to deploy
-[ Package Management Tools and Repositories ]
+
+Package Management Tools and Repositories
+-----------------------------------------
+
     package: dependency, version, architecture information. 
     packages: install programs which depends on libraries
     package tool sw keeps a database info about packages: name, version number, location of the files. It facilitates installing, updating and removing sw easily
     rpm, debian, tarball, pacman, ebuild
-[ Licensing ]
+
+Licensing
+---------
+
     Free software foundation(FSF), open source initiative(OSI), creative commons
     copyright: legalized right to copy something
     berne convention: internation treaty that requieres countries to recognize the other countries copyrights
@@ -390,7 +531,10 @@
     Commercial software, developed with the intent to sell that software as a profit
     shareware, similar to commercial software except at the copyright and legal perspectives
     Freeware, like shareware but the software is always free and has no cost involved
-[ Free Software Foundation (FSF), Open Source Initiative (OSI) ]
+
+Free Software Foundation (FSF), Open Source Initiative (OSI)
+------------------------------------------------------------
+
     GPL: General Public License
     Freedom to use the software for any purpose.
     Freedom to examine the source code and modify it as you see fit
@@ -418,7 +562,10 @@
     Creative Commons, create by Lawrence Lessig
     Creative Commons(CC) license, enable the free distribution of an otherwise copyrighted work. It's used when an author wants to give people the right to share, use, and build upon a work they have created. Provides an author flexibility and protects the people who use or redistribute that work if they abide by the conditions specified in the author's word license.
     FSF and OSI are dedicated to promoting software freedoms. CC goals are broader as the license are aimed at things like audio recordings, textual works, and so on.
-[ Desktop Skills ]
+
+Desktop Skills
+--------------
+
     KDE: Default for Mandriva and SUSE
     KDE uses the qt widget set
     Gnome uses gtk widget set
@@ -427,18 +574,30 @@
     Unity: for Ubuntu
     XFCE: gtk+ widget set, consumes fewer resources than kde and gnome
     A desktop manager usually has: Launching programs, desktop menus, panel, context menus, searching for programs, terminals, 
-[ Industry uses of Linux, Cloud Computing and Virtualization ]
+
+Industry uses of Linux, Cloud Computing and Virtualization
+----------------------------------------------------------
+
     virtualization is the creation of a virtual OS through a virtualization sw that is known as the hypervisor.
     An hypervisor allows us to virtualize an OS in another OS known as the host. 
-[ Basic shell ]
+
+Basic shell
+-----------
+
     Shell, command line interpreter that allows us to type commands at our keyboard
     shells, sh, bash , csh, tsch, zsh, ksh
     echo $SHELL, shows your shell
     alt+fn, changes the shell on the system
-[ Working With Options ]
+
+Working With Options
+--------------------
+
     parameters with a dash ("-") are called options
     Parameters with no leading das are called arguments
-[ Variables - Environment / System Variables ]
+
+Variables - Environment / System Variables
+------------------------------------------
+
     variable, placeholder for another value.
     Environment, set of variables that any program can access
     2 variable types: USER DEFINED and SYSTEM DEFINED
@@ -465,14 +624,19 @@
     export PATH, makes available a env variable to all the other interactive user shells
     export,  marks an environment variable to be exported with any newly forked child processes and thus it allows a child process to inherit all marked variable
     /etc/profile, to add an evironment variable for all the users
-[ Globbing ]
+
+Globbing
+--------
     globbing, global command 
     globbing, it's a process of expanding a non specific  filename contaning a wildcard character into a set of specific filenames  that exist in a storage server , file or network.  
     wildcard, it's a symbol that can stand for one or more character.
     ?, is for a single character.
     *, matches any character or set of characters, inluding no character
     []. matches a character according the subcharacters
-[ Quoting ]
+
+Quoting
+-------
+
     double quote, subtitutes the value of variables and commands
     echo "Username is $USER", prints the USER value
     single quote, preserves the literal meaning of each character of a given string.
@@ -481,7 +645,10 @@
     $echo "this is $5.00", prints: this is .00
     $echo "this is \$5.00", prints: this is $5.00
     back tick, ``,  used for command substitution
-[ Man ]
+
+Man
+---
+
     MAN pages are a reference format
     man 1, executables programs and shell commands.
     man 2, system calls provided by the kernel
@@ -495,18 +662,29 @@
     whatis [program], shows a summary of all the manpages(1-9) about a command
     apropos [program], man -k [program], looks for all the man pages about a certain program.
     Man pages are organized: Name, synopsis, description, options, files, see also, bugs, history, author
-[ Info ]
+
+Info
+----
+
     Info, supports functions(hyperlinks) in which man can not.
     info [program], supports functions(hyperlinks) in which man can not.
-[ Hidden files and directories ]
+
+Hidden files and directories
+----------------------------
+
     .file, hidden file
     touch .file, creates a hidden file
     ls -a, lists all files including hidden files
     mkdir .dir, creates a hidden folder.
-[ Absolute and relative paths ]
+
+Absolute and relative paths
+---------------------------
     absolute path, full path to a directory: /path/to/directory
     relative path, user the path i'm currently in as reference: path/to/directory. 
-[ Files and directories ]
+
+Files and directories
+---------------------
+
     touch file, creates an empty text file
     touch, updates  access timestamp information of a  file.
     touch -c [file], updates a file if it exists, it doesn't exist it won't create it. 
@@ -525,9 +703,15 @@
     mkdir  -p, --parents, no error if existing, make parent directories as needed
     rmdir [directory], deletes an empty directory
     rm -rf [directory], deletes a directory recursively and ignores nonexistent files and arguments.
-[ Case sensitivity ]
+
+Case sensitivity
+----------------
+
     linux commands, file names and directory names are all case sensitive.
-[ Simple globbing and quoting ]
+
+Simple globbing and quoting
+---------------------------
+
     *, zero or more characters
     ?, only one character
     [], looks for characters inside the bracket for one character
@@ -536,12 +720,18 @@
     ``, executes a command
     \, escapes a special character
     echo -e, enabales interpretation of backslash escapes.
-[ Files, directories ]
+
+Files, directories
+------------------
+
     tar, utility that archives things altogether. It doesn't compress or compact files. 
     tar -cvf [name.tar] [folder_to_compress], creates a tarfile and prints verbosely
     tar -xvf [file.tar], extracts a tarfile and prints verbosely
     tar -cvf [name.tar] [files_to_compres...], creates a tarfile and prints verbosely
-[ Archives, compression ]
+
+Archives, compression
+---------------------
+
     gzip, bzip2, zip, compress a file. 
     gunzip, bunzip, unzip, uncompress a file.
     zip, compress and archives files. gzip and bzip2 just compress files.
@@ -557,17 +747,26 @@
     bunzip [file.tar.bz2], decompress a tar file
     tar -zcvf [file.tar] [files to compress], compress files using gzip and archive them using tar verbosely.
     tar -jcvf [file.tar] [files to compress], compress files using bzip2 and archive them using tar verbosely.
-[ Command line pipes ]
+
+Command line pipes
+------------------
+
     standard bash file descriptors: stdin, stdout, stderr
     Input -> command -> Output | ->Error
     pipes |, redirects standard output
-[ I/O re-direction ]
+
+I/O re-direction
+----------------
+
     >, 1> , redirects stdout
     2> , redirects stderr
     >>, redirects and appends stdout to data if exists instead of creating a new one. 
     command 1> stdout_file 2> stderr_file, redirects stdout to a file and stderr if there's some to a stderr file
     command < stdin_file, redirects stdin file to a command 
-[ Regular Expressions  ]
+
+Regular Expressions 
+-------------------
+
     *, matches any character of 
     ., any single character
     ?, matches zero or one of the proceeding characters
@@ -576,12 +775,18 @@
     [nnn], matches any one character between the braces
     [^nnn], matches any expression that doesn't contain any one of the characters specified 
     [n-n], matches any single character
-[ Basic text editing ]
+
+Basic text editing
+------------------
+
     text editors: nano, kate, gedit, vim 
     nano file, opens a file
     vim file, opens a file
     vim modes: command, insert, visual
-[ Basic shell scripting ]
+
+Basic shell scripting
+---------------------
+
     arguments, $1 first argument, $2 second argument, $? exit code status(0 succesful, non 0 unsuccesful)
     #!, shebang 
     &&, AND
@@ -598,7 +803,10 @@
     -r, checks if file exist and if it has read permission granted
     -w, checks if file exist and if it has write permission granted
     -x, checks if file exist and if it has execute permission granted
-[ Windows, Mac, Linux differences ]
+
+Windows, Mac, Linux differences
+-------------------------------
+
     Windows:
     - uses proprietary applications.
     - Active Directory.
@@ -616,7 +824,10 @@
     - Linux server can be administered by CLI only and with no GUI overhead.
     - OSX has UNIX under the hood and we can manage it via CLI for the most part.
     - Windows can have both GUI and CLI. Can use PowerShell to manage it via CLI.
-[ Distribution life cycle management ]
+
+Distribution life cycle management
+----------------------------------
+
     Linux life cycle management:
     - Design: identify features and functions to be added.
     - Develop: Implements the design in a cathedral manner doing some type of validation for a bug free system.
@@ -637,7 +848,10 @@
     - OpenSuse, 8 months.
     - Debian, 2 yeras
     - Ubunt, 2 years
-[ Hardware ]
+
+Hardware
+--------
+
     CPU, is the electronic circuitry within a computer that carries out the instructions of a computer program by performing the basic arithmetic, logical, control and input/output (I/O) operations specified by the instructions.
     RAM,  allows data items to be accessed (read or written) in almost the same amount of time irrespective of the physical location of data inside the memory.
     RAM, allows data items to be accessed (read or written) in almost the same amount of time irrespective of the physical location of data inside the memory. RAM is normally associated with volatile types of memory (such as DRAM memory modules), where stored information is lost if power is removed, although many efforts have been made to develop non-volatile RAM chips.
@@ -646,18 +860,27 @@
     Power supply,  is an electronic device that supplies electric energy to an electrical load.
     Hard disks, is a data storage device used for storing and retrieving digital information using one or more rigid ("hard") rapidly rotating disks (platters) coated with magnetic material. The platters are paired with magnetic heads arranged on a moving actuator arm, which read and write data to the platter surfaces. Data is accessed in a random-access manner, meaning that individual blocks of data can be stored or retrieved in any order rather than sequentially. HDDs retain stored data even when powered off.
     Optical drives, is a disk drive that uses laser light or electromagnetic waves within or near the visible light spectrum as part of the process of reading or writing data to or from optical discs. Compact discs, DVDs, and Blu-ray discs are common types of optical media which can be read and recorded by such drive.
-[ Kernel ]
+
+Kernel
+------
+
     Kernel, unix-like operating system and created by Linus Torvalds.
     Kernel, lowest level of easily replacement sw that interfaces with the hw of the computer. 
     Kernel, imposes order by using hierarchy. Then the system boots, typically one process called the init process starts up the /sbin/init that in turn manages child processes. 
-[ Processes ]
+
+Processes
+---------
+
     Every process has a associated proces id(PID.
     Every parent process has a parent id (PPID).
     ps -u [user] --forest
     ps aux | grep [user]
     top, shows current running processes
     free -H, show the memory status
-[ syslog, klog, dmesg ]
+
+syslog, klog, dmesg
+-------------------
+
     log files, files which record operation information. 
     /var/log, default directory to store logs.
     boot.log, mantains startup information.
@@ -670,12 +893,18 @@
     syslogd, daemon to manage general log files.
     dmseg, logs for the kernel rin buffer
     The kernel keeps its logs in a ring buffer. The main reason for this is so that the logs from the system startup get saved until the syslog daemon gets a chance to start up and collect them. Otherwise there would be no record of any logs prior to the startup of the syslog daemon. The contents of that ring buffer can be seen at any time using the dmesg command, and its contents are also saved to /var/log/dmesg just as the syslog daemon is starting up.
-[ /lib, /usr/lib, /etc, /var/log ]
+
+/lib, /usr/lib, /etc, /var/log
+------------------------------
+
     /lib, linked library files used by binaries in /bin and /usr/bin
     /usr/lib linked library files used by binaries in /bin and /usr/bin
     /etc, configuration files for our linux operating system.
     /var/log, log files for our linux OS.
-[ Internet, network, routers ]
+
+Internet, network, routers
+--------------------------
+
     domain controller.
     database server
     dhcp server
@@ -697,7 +926,10 @@
     5. Session, The session layer provides the mechanism for opening, closing and managing a session between end-user application processes, i.e., a semi-permanent dialogue.
     6. Presentation,  responsible for the delivery and formatting of information to the application layer for further processing or display.[4] It relieves the application layer of concern regarding syntactical differences in data representation within the end-user systems.
     7. Application,  is an abstraction layer that specifies the shared protocols and interface methods used by hosts in a communications network.
-[ Network configuration ]
+
+Network configuration
+---------------------
+
     ping, testing of connectivity of a remote network device.
     dig, allows us to lookup ip addresses for dns names.
     netstat, list network connections, routing info, NIC info.
@@ -714,7 +946,10 @@
     netstat -i, displays stats of network interfaces.
     netstat -l, displays just the listening sockets.
     netstat -s, displays a summary for each protocol.
-[ Root and Standard Users ]
+
+Root and Standard Users
+-----------------------
+
     finger, user information lookup program
     id [user], prints real and effective user and group IDs
     /etc/passwd, contains one line for each user account, with seven fields delimited by colons (“:”). These fields are:
@@ -744,11 +979,17 @@
     w, Show who is logged on and what they are doing.
     who, who is logged on.
     last, show listing of last logged in users
-[ System users ]
+
+System users
+------------
+
     system accounts, are not for use for users to log in, but they are users to run services on the system.
     system accounts have lower ID's 
     system accounts have lower ID's(0 - 999), instead of user accounts which their UID  are above 1000
-[ User commands ]
+
+User commands
+-------------
+
     useradd [user], creates a user with default parameters.
     /etc/default/useradd, default values for useradd
     useradd -D, prints default values
@@ -762,11 +1003,17 @@
     usermod, modify a user account
     userdel, deletes a user
     userdel -r [username], deletes a user and its home directory
-[ User IDs ]
+
+User IDs
+--------
+
     each user has a UID.
     UID, used to validate authorization for different services.
     uid=0, gid=0, root user
-[ File/directory permissions and owners ]
+
+File/directory permissions and owners
+-------------------------------------
+
     Permissions: User, Group, Other
     rwx, where: r=read, w=write, x=execute
     the permissions of a file consists of 3 rwx sets: first set  users,  second set groups, thrid set others.
@@ -775,7 +1022,10 @@
     chmod XXX [filename|directory], modifiy permission with octal notation
     chmod ugo+rwx [filename|directory], adds all permissions  (user, group and other) to a file.
     chmod ugo-rwx [filename|directory], removes all permissions (user, group and other) to a file.
-[ System files, Special Files and Sticky Bit ]
+
+System files, Special Files and Sticky Bit
+------------------------------------------
+
     /var, contains files that change often such as mail, logs, etc.
     /var/tmp, contains files that do not get deleted on reboot.
     /tmp, contains temproary files that do get deleted on reboot.
@@ -783,10 +1033,16 @@
     chmod +t [file|directory], adds a sticky bit to a file or directory.
     chmod -t [file|directory] removes a sticky bit to a file or directory.
      chmod 1XXX [file|directory], adds a sticky bit to a file or directory in octal notation..
-[ Symbolic links ]
+
+Symbolic links
+--------------
+
     ln, make links between files
     ln -s  [target_file] [sym_link],  make symbolic links instead of hard links
-[ The Linux Essentials Exam/Certification ]
+
+The Linux Essentials Exam/Certification
+---------------------------------------
+
     40 questions in 60 minutes
     vendor-neutral linux profressional institute
     5 topics:
@@ -795,11 +1051,14 @@
     - the power of the command line
     - linux operating system
     - security and file permissons
-[ A linux Introduction ]
+
+A linux Introduction
+--------------------
+
     created by linus torvalds
     free of charge
     tennembaum created minix to teach operating system because unix was closed for universities 
-[ screen ]
+screen
       Screen  is a full-screen window manager that multiplexes a physical terminal between several processes (typically interactive shells).
      When screen is called, it creates a single window with a shell in it (or the specified command) and then gets out of your way so  that        you  can  use  the  program as you normally would.  Then, at any time, you can create new (full-screen) windows with other programs in        them (including more shells), kill existing windows, view a list of windows, turn output  logging  on  and  off,  copy-and-paste  text        between  windows, view the scrollback history, switch between windows in whatever manner you wish, etc
     All windows run their programs        completely independent of each other. Programs continue to run when their window is currently not visible  and  even  when  the  whole        screen  session is detached from the user's terminal.  When a program terminates, screen (per default) kills the window that contained        it.  If this window was in the foreground, the display switches to the previous window; if none are left, screen exits.
@@ -810,7 +1069,10 @@
     screen [command], launches a screen to run command  and terminates it(the screen) after the command finishes running.
     screen -S [session_name], identifies the  ses‐             sion for "screen -list" and "screen -r" actions.
     screen -x [pid.tty.host], Attach to a not detached screen session.
-[ xz Compression ]
+
+xz Compression
+--------------
+
      xz is a general-purpose data compression tool. 
     - The native file format is  the  .xz        format.
     - xz  compresses  or decompresses each file according to the selected operation mode.  If no files are given or file is -, xz reads from stan‐        dard input and writes the processed data to standard output.
@@ -824,7 +1086,10 @@
     - xz -z directory.tar
     - xz -d directory.tar.xz
     - tar xvf directory.tar
-[ pkill and pgrep ]
+
+pkill and pgrep
+---------------
+
      pgrep  looks through the currently running processes and lists the process IDs which match the selection criteria to stdout.
     - All the criteria have to match.
     pgrep -l -u [user], lists all processes that the user [user] has in the system. 
@@ -835,7 +1100,10 @@
     pkill -t [TTY], kills processes whose controlling terminal matches. 
     - The terminal name should be specified without the "/dev/" prefix.
     pgrep -n -u [user], prints only the newest(most recently started process) of the matching processes for user [user].
-[ Upstart Overview ]
+
+Upstart Overview
+----------------
+
     init is the parent of all processes on the system, it is executed by the kernel and is responsible for starting all other processes; it is the parent of all processes whose natural parents have died and it is responsible for reaping those when they die.
     - upstart is the first process to start and still launches system services but launch processes in parallel, instead of SysV init which launches processes sequentially.
     --- SysV init used to use bash scripts to launch services.
@@ -854,12 +1122,15 @@
     * When first started , the init(8) daemon will emit the startup(7) event. This will activate jobs that implement System V compatibility and the runlevel(7) event.
     *** start on EVENT, defines the set of events that will cause the job to be automatically started.
     *** stop on EVENT, defines the set of events that will cause the job to be automatically stopped.
-[ dmesg  ]
+
+dmesg 
+-----
+
            dmesg is used to examine or control the kernel ring buffer.
     A kernel is the core of an operating system. It is the first part of the operating system that is loaded into memory when a computer boots up (i.e., starts up), and it controls virtually everything on a system.
     A buffer is a portion of a computer's memory that is set aside as a temporary holding place for data that is being sent to or received from an external device.
     A ring buffer is a buffer of fixed size for which any new data added to it overwrites the oldest data in it. 
-[ Hands On - Package Management - APT, dpkg ]
+Hands On - Package Management - APT, dpkg
     apt uses /etc/apt/sources.list to check where to get packages
     apt-get update: updates a local cache for a repository listed in sources.list
     apt-cache search [package] looks on the cache list of the repository to look for the package
@@ -873,23 +1144,35 @@
     dpkg --get-selections, lists all the installed packages
     dpkg  --remove [package], removes binaries and libraries but not configuration files
     dpkg --purge [package], removes a package with binaries, libraries and configuration files
-[ Open Source Business Models ]
+
+Open Source Business Models
+---------------------------
+
     selling services and support, technical support and training
     dual licensing, 2 version of a product .. one is open source, and other commercial. 
     Multiple products, other products financial the main products
     open source drivers
     Bounties
     Donations
-[ Command Line Syntax - ls ]
+
+Command Line Syntax - ls
+------------------------
+
     ls, listing of files and folder
     ls -a, lists all files(including hidden files)
     ls -l, long listing
     ls -p, directory listing
     ls -R, recursive listing
-[ Command Line Syntax - $PATH, Case Sensitivity  ]
+
+Command Line Syntax - $PATH, Case Sensitivity 
+---------------------------------------------
+
     echo $PATH, shows path dirs where executables are located
     /path/to/file.sh, ./file.sh,  if you want to execute a file not located in $PATH
-[ Command Line Syntax - Basic Commands ]
+
+Command Line Syntax - Basic Commands
+------------------------------------
+
     halt, init 0, shuts down the system
     init 6, reboot, shuts down and restore it
     shutdown -P, power off
@@ -907,7 +1190,10 @@
     netstat, shows network information status
     route, shows the routing table
     ifconfig, shows the net configuration
-[ Command Line Syntax - uname ]
+
+Command Line Syntax - uname
+---------------------------
+
     uname, returns information of the linux system
     uname -s, displays the current linux name
     uname -n, displays the system hostname
@@ -918,21 +1204,33 @@
     uname -i, diplays the hw platform
     uname -o, displays the operating system
     uname -a, displays all uname information
-[ Command Line Syntax - Command History, Command Completion ]
+
+Command Line Syntax - Command History, Command Completion
+---------------------------------------------------------
+
     .bash_history, shows a user command history for the bash shell
     $HISTFILESIZE, changes the history file size
     command completion, use TAB to accomplish command completion
-[ Command Line Syntax - cd and pwd ]
+
+Command Line Syntax - cd and pwd
+--------------------------------
+
     pwd, prints the current working directory
     cd [path\, changes the directory path to [path]
     cd, changes the directory path to $HOME
-[ Shell Configuration Files ]
+
+Shell Configuration Files
+-------------------------
+
     A login shell is the first process that executes under your user ID when you log in for an interactive session. The login process tells the shell to behave as a login shell with a convention: passing argument 0, which is normally the name of the shell executable, with a - character prepended (e.g. -bash whereas it would normally be bash. Login shells typically read a file that does things like setting environment variables: /etc/profile and ~/.profile for the traditional Bourne shell, ~/.bash_profile additionally for bash†, /etc/zprofile and ~/.zprofile for zsh†, /etc/csh.login and ~/.login for csh, etc.
     When you log in on a text console, or through SSH, or with su -, you get an interactive login shell. When you log in in graphical mode (on an X display manager), you don't get a login shell, instead you get a session manager or a window manager
     It's rare to run a non-interactive login shell, but some X settings do that when you log in with a display manager, so as to arrange to read the profile files. Other settings (this depends on the distribution and on the display manager) read /etc/profile and ~/.profile explicitly, or don't read them.
     When you start a shell in a terminal in an existing session (screen, X terminal, Emacs terminal buffer, a shell inside another, …), you get an interactive, non-login shell. That shell might read a shell configuration file (~/.bashrc for bash, /etc/zshrc and ~/.zshrc for zsh, /etc/csh.cshrc and ~/.cshrc for csh, etc.).
     When a shell runs a script or a command passed on its command line, it's a non-interactive, non-login shell. Such shells run all the time: it's very common that when a program calls another program, it really runs a tiny script in a shell to invoke that other program. Some shells read a startup file in this case (ksh and bash run the file indicated by the ENV variable, zsh runs /etc/zshenv and ~/.zshenv), but this is risky: the shell can be invoked in all sorts of contexts, and there's hardly anything you can do that might not break something.
-[ Introduction ]
+
+Introduction
+------------
+
     Jenkins, an application that monitors executions of repeated jobs, such as building a software project or jobs run by cron.
     Continuous integrations, is a development practice that requires developers to integrate code into a shared repository several times per day. Each check-in is then verified by an automated build, allowing everyone to detect and be notified of problems with the package inmediately.
     build pipeline, is a process by which the sw build is broken down in sections:
@@ -942,7 +1240,10 @@
     - Reporting
     - Deployment
     - Notification
-[ Best Practices ]
+
+Best Practices
+--------------
+
     Jenkins Must Do:
     - Back Up Jenkins.
     - Use file fingerprinting to manage dependencies.
@@ -958,13 +1259,22 @@
     - Keep your Jenkins up to date - at least be on the latest LTS version.
     - Keep your plugins up to date.
     - Don't build on master except on very small deployments. 
-[ Jenkins Backup - Using Plugins to Manage Your System ]
+
+Jenkins Backup - Using Plugins to Manage Your System
+----------------------------------------------------
+
     backup configuration and job parameters, and job workspace
-[ Variables - User Defined ]
+
+Variables - User Defined
+------------------------
+
     A variable can container letters and number, but it can not begin with a number.
     A variable can contain hyphen and be upper case.
     A variable can not container spaces.
-[ locate, find, whereis, and using /usr/share/doc/ ]
+
+locate, find, whereis, and using /usr/share/doc/
+------------------------------------------------
+
     README file location, /usr/doc/packagename, /usr/share/dock/packagename, /usr/share/doc/packages/packagename
     On redhat, rpm -ql [packagename] | grep doc
     whereis [program], locate the binary, source, and manual page files for a comman
@@ -978,7 +1288,10 @@
     .odt: LibreOffice, OpenOffice
     .pdf: okular
     .tif, .png, .jpg: gimp
-[ The Linux Filesystem  ]
+
+The Linux Filesystem 
+--------------------
+
     Linux file system, where we store information on a storage device in a certain manner. 
     LFS, data is organized and easily located.
     LFS, Data can be saved in a persistent manner.
@@ -1012,7 +1325,10 @@
     ext3, ext2 upgrade. Journaling, eliminates the problem of checking all the filesystem if the system goes down; records   transactions and marks it as incomplete, when the transaction is done it marks it as completed; if the system crashes   the system replays the journal to a consist filesystem before the crash.
     Reiser, jornaling and supports larger file size up to 8TB and 16 TB volumes.
     ext4, ext3 upgraded. Supports volumes of 1 exabyte, and file size up to 16TB.
-[ Group commands ]
+
+Group commands
+--------------
+
     /etc/group, file to define groups
     - group_name
     - password
@@ -1021,10 +1337,16 @@
     groupadd [group_name], creates a group
     groupmod, modify a group definition on the system.
     qroudel [group_name], deletes a group name.
-[ How to Install CentOS 7 with VirtualBox ]
+
+How to Install CentOS 7 with VirtualBox
+---------------------------------------
+
     yum install kernel-dev gcc* para instalar vbox-guest-additions
     Configurar red para obtener la fecha y hora por NTP
-[ commands (revisited) ]
+
+commands (revisited)
+--------------------
+
     cat, diplays contents of a text file
     less, reads a file
     head/tail, reads first or last 10 lines of a file.
@@ -1038,7 +1360,10 @@
     sort -r file, reverse the sort order.
     sort file, sorts a file.
     echo "welcome to peru"| cut -d' ' -f2- , prints "to peru" because we delimetered by spaces obtaining 3 fieds and then we cut in 2 segments and printing from the second field to the end.  
-[ Hands On - Package Management - YUM, rpm ]
+
+Hands On - Package Management - YUM, rpm
+----------------------------------------
+
     yum remove [package], removes an application
     rpm -ihv [package], installs a packages, shows installationstatus, and prints verbosely
     which [package], shows the executable
@@ -1058,9 +1383,12 @@
     yum deplist [package], lists dependencies of a package
     yum remove [package], removes a package
     yum clean packages, yum clean all, cleans the system for any left configuration after removing a package
-[ Introduction to DevOps ]
+
+Introduction to DevOps
+----------------------
+
     devops. is a software development method that stresses communication, collaboration, integration, automation, and measurement of cooperation between software developers and other information-technology professionals. DevOps acknowledges the interdependence of software development, quality assurance, and IT operations, and aims to help an organization rapidly produce software products and services and to improve operations performance.
-[ Traditional Responsibility Silos ]
+Traditional Responsibility Silos
     Operations, set of processes and services by IT presonnel to their own internal or external clients in order to run their business, includes:
     0 Infraestructure and monitoring.
     - Architecture and planning
@@ -1071,29 +1399,35 @@
     - Waterfall.
     - Agile
     - Rapid.
-[ IaaS: Infrastucture as a Service ]
+
+IaaS: Infrastucture as a Service
+--------------------------------
+
     IaaS, charging infraestructure costs back to the business units that consumed them. 
     IaaS Stack: O/S, Virtualization, Servers, Storage, Networking. 
     Iaas, It is a level of service and support that is used to clearly identify where the responsibility starts and ends when providing infraestructure to its consumer.
-[ PaaS: Platform as a Service ]
+
+PaaS: Platform as a Service
+---------------------------
+
     PaaS, IT delivers a "computing platform" for consumption. 
     PaaS: IaaS + Middleware + Runtime. 
     Runtime, Most languages have some form of runtime system, which implements control over the order in which work that was specified in terms of the language gets performed.
     Middleware, is computer software that provides services to software applications beyond those available from the operating system. It can be described as "software glue".[1] Middleware makes it easier for software developers to perform communication and input/output, so they can focus on the specific purpose of their application. Middleware is the software that connects software components or enterprise applications. Middleware is the software layer that lies between the operating system and the applications on each side of a distributed computer network. Typically, it supports complex, distributed business software applications.
-[ SaaS: Software as a Service ]
+SaaS: Software as a Service
     SaaS, delivers ACCESS to the software to be used without having to do anything to manage, configure, monitor or support it. 
     SaaS: PaaS + Data + Applications
     Virtualization and cloud technologies requiere automation in order to provision quickly enough for the service to be readily consumable. In order to do that, a ton of sw has been written to manage those compute resources and allow the automatic scaling based on need. 
-[ Build Automation ]
+Build Automation
           Build Automation, The process of building or compiling software that can then be deployed via script or cron jobs to various environments, including production systems. Also, it encompasses not only the software portion, but the process of automating the deployment of compute resources.
     Infraestructure as code, everything is treated as a "compute resource" and can be managed with code.  
     Build automation, consistency and stability is the key to obtain build automation. By removing the manual process necessary to deploy hw and sw, you eliminate potential inconsistencies amogst the environments and reduce troubleshooting time when there is a problem since rollback and new deployments are trivial.
-[ Continuous Integration and Continuous Deployment ]
+Continuous Integration and Continuous Deployment
     Continuous integration, practice of merging development working copies with the shared source main multiples times per day. 
     The concept of multiple integrations per day on the main source branch is to prevent integration problems in large development teams where the odds of on change breaking the changes of another developer would be smaller. 
     Continuous Delivery, software teams keep producing valuable software in very short delivery cycles and ensures that those features can be reliably and consistently released at any point in time. 
     CI vs CD: CI manages code  throughout the develpment lifecycly instead of producing valuable and quick features as CD mandates to achieve. 
     plan -> code -> build -> test -> release -> deploy -> operate -> monitor -> plan
-[ Jenkins ]
+Jenkins
     Jenkis, build automation on steroids and cotinuous integration.
     Jenkins, allows you to create build jobs that do anything from deploying a simple software build to the custom creation of a Docker container with specific build branches while doing performance and unit testing while reporting results back to the team. 

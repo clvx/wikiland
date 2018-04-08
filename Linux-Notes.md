@@ -1,30 +1,54 @@
 Logs & More File Management Tools
 =================================
 
-    /var/log, system and services log files.
-    tail -n # [file], outputs the last n lines of a file
-    tail [file], outputs the last 10 lines of a file by default.
-    tail -f [file], outputs appended data as the file grows.
-    cat file1 > file2, concatenates file2 and redirects output to file2
-    cat file1 > file2, prints file1 and redirects output to file2 instead of standard output
-    cat file | grep 'pattern', pipes stdout to grep and then searches for pattern.
-    /var/log/messages – Contains global system messages, including the messages that are logged during system startup.
-    /var/log/dmesg – Contains kernel ring buffer information. When the system boots up, it prints number of messages on the screen that displays information about the hardware devices that the kernel detects during boot process. These messages are available in kernel ring buffer and whenever the new message comes the old message gets overwritten
-    /var/log/auth.log – Contains system authorization information, including user logins and authentication machinsm that were used.
-    /var/log/boot.log – Contains information that are logged when the system boots
-    var/log/dpkg.log – Contains information that are logged when a package is installed or removed using dpkg command
-    var/log/dpkg.log – Contains information that are logged when a package is installed or removed using dpkg command
-    /var/log/kern.log – Contains information logged by the kernel. Helpful for you to troubleshoot a custom-built kernel.
-    /var/log/lastlog – Displays the recent login information for all the users. This is not an ascii file. You should use lastlog command to view the content of this file.
-    /var/log/maillog /var/log/mail.log – Contains the log information from the mail server that is running on the system. For example, sendmail logs information about all the sent items to this file
-    /var/log/alternatives.log – Information by the update-alternatives are logged into this log file. On Ubuntu, update-alternatives maintains symbolic links determining default commands.
-    /var/log/cups – All printer and printing related log messages
-    /var/log/yum.log – Contains information that are logged when a package is installed using yum
-    /var/log/anaconda.log – When you install Linux, all installation related messages are stored in this log file
-    /var/log/cron – Whenever cron daemon (or anacron) starts a cron job, it logs the information about the cron job in this file
-    /var/log/secure – Contains information related to authentication and authorization privileges
-    /var/log/wtmp or /var/log/utmp – Contains login records. Using wtmp you can find out who is logged into the system. who command uses this file to display the information.
-    /var/log/faillog – Contains user failed login attemps. Use faillog command to display the content of this file.
+`/var/log`, system and services log files.
+
+`tail -n # [file]`, outputs the last n lines of a file.
+
+`tail [file]`, outputs the last 10 lines of a file by default.
+
+`tail -f [file]`, outputs appended data as the file grows.
+
+`cat file1 > file2`, concatenates file2 and redirects output to file2
+
+`cat file1 > file2`, prints file1 and redirects output to file2 instead of standard output
+
+`cat file | grep 'pattern'`, pipes stdout to grep and then searches for pattern.
+
+`/var/log/messages`, Contains global system messages, including the messages that are logged during system startup.
+
+`/var/log/dmesg`, Contains kernel ring buffer information. When the system boots up, it prints number of messages on the screen that displays information about the hardware devices that the kernel detects during boot process. These messages are available in kernel ring buffer and whenever the new message comes the old message gets overwritten
+
+`/var/log/auth.log`, Contains system authorization information, including user logins and authentication machinsm that were used.
+
+`/var/log/boot.log`, Contains information that are logged when the system boots
+
+`var/log/dpkg.log`, Contains information that are logged when a package is installed or removed using dpkg command
+
+`var/log/dpkg.log`, Contains information that are logged when a package is installed or removed using dpkg command
+
+`/var/log/kern.log`, Contains information logged by the kernel. Helpful for you to troubleshoot a custom-built kernel.
+
+`/var/log/lastlog`, Displays the recent login information for all the users. This is not an ascii file. You should use lastlog command to view the content of this file.
+
+`/var/log/maillog` `/var/log/mail.log`, Contains the log information from the mail server that is running on the system. For example, sendmail logs information about all the sent items to this file
+
+`/var/log/alternatives.log`, Information by the update-alternatives are logged into this log file. On Ubuntu, update-alternatives maintains symbolic links determining default commands.
+
+`/var/log/cups`,  All printer and printing related log messages
+
+`/var/log/yum.log`, Contains information that are logged when a package is installed using yum
+
+`/var/log/anaconda.log`, When you install Linux, all installation related messages are stored in this log file
+
+`/var/log/cron`, Whenever cron daemon (or anacron) starts a cron job, it logs the information about the cron job in this file
+
+`/var/log/secure`, Contains information related to authentication and authorization privileges
+
+`/var/log/wtmp` `/var/log/utmp`, Contains login records. Using wtmp you can find out who is logged into the system. who command uses this file to display the information.
+
+`/var/log/faillog`, Contains user failed login attemps. Use faillog command to display the content of this file.
+
 
 Root User, Sudo Users And Setting Up Your User Account
 ======================================================

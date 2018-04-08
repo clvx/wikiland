@@ -53,52 +53,84 @@ Logs & More File Management Tools
 Root User, Sudo Users And Setting Up Your User Account
 ======================================================
 
-    sudo, execute a command as the superuser or another user, as specified by the security policy.
-    useradd, create a new user or update default new user information.. adds information to /etc/passwd
-    visudo, edit the sudoers file. locks the sudoers file against multiple simultaneous edits, provides basic sanity checks, and checks for parse errors.
-    %wheel group, super user group
-    usermod -G [group] [user], adds a group to a user
-    userdel -r [user], deletes a user and its files and directories; without -r only deletes the user.
-    In Debian, Ubuntu, or Centos the sudo, admin or wheel group is the super user group.
+`sudo`, execute a command as the superuser or another user, as specified by the security policy.
+
+`useradd`, create a new user or update default new user information.. adds information to /etc/passwd
+
+`visudo`, edit the sudoers file. locks the sudoers file against multiple simultaneous edits, provides basic sanity checks, and checks for parse errors.
+
+`%wheel group`, super user group
+
+`usermod -G [group] [user]`, adds a group to a user
+
+`userdel -r [user]`, deletes a user and its files and directories; without -r only deletes the user.
+
+In `Debian`, `Ubuntu`, or `Centos` the `sudo`, `admin` or `wheel` group is the super user group.
 
 Navigating Linux & The File System
 ==================================
 
-    .file, hidden file
-    ls  -la, lists all files in long listing(timestamp, permissions, owner, group).
-    cd [directory], changes directory
-    mv [source] [dest], moves from source to destination
-    tail [file], output the last part of files.
-    pwd, prints the working directory
-    head [file], output the first part of files.
-    rm [file], removes a file
-    cd, changes to the current user home directory
-    rmdir [directory], removes a directory if it's empty
-    mkdir [directory], creates a directory
-    rm -r, removes everything inside the directory including the directory.
-    touch, changes file timestamps
-    cp -r [source] [directory], copy files recursevely 
-    rm -rf, rm -r, removes recursevely everything inside the directory including the directory even if it has files.
-    /var, directory for variable data
-    /etc, directory for configuration files
+`.file`, hidden file
+
+`ls  -la`, lists all files in long listing(timestamp, permissions, owner, group).
+
+`cd [directory]`, changes directory
+
+`mv [source] [dest]`, moves from source to destination
+
+`tail [file]`, output the last part of files.
+
+`pwd`, prints the working directory
+
+`head [file]`, output the first part of files.
+
+`rm [file]`, removes a file
+
+`cd`, changes to the current user home directory
+
+`rmdir [directory]`, removes a directory if it's empty
+
+`mkdir [directory]`, creates a directory
+
+`rm -r`, removes everything inside the directory including the directory.
+
+`touch`, changes file timestamps
+
+`cp -r [source] [directory]`, copy files recursevely 
+
+`rm -rf`, `rm -r`, removes recursevely everything inside the directory including the directory even if it has files.
+
+`/var`, directory for variable data
+
+`/etc`, directory for configuration files
 
 File Permissions 
 ================
 
-    touch [file], creates a file without editing
-    ls -al, lists all file in a long listing
-    -rw-rw-r--. 1 mike mike   0 nov  9 15:04 my_file
+`touch [file]`, creates a file without editing
+
+`ls -al`, lists all file in a long listing
+
+`-rw-rw-r--. 1 mike mike   0 nov  9 15:04 my_file`
+
     - First -, type of file: d(directory), t(sticky).
-    - Segundo ---, represents tuser permissions rwx or 777 as octal.
+
     - Second ---, represents tuser permissions rwx or 777 as octal.
+
     - Third ---, represents group permissions rwx or 777 as octal.
+
     - Fourth ---, represents others permissions rwx or 777 as octal.
-    chmod -R [file], changes permissions for a file or directory. 
-    - r or 4: reads a file or lists a directory
-    - w or 2 : writes in a file or a directory.
-    - x or 1: executes a file or opens a directory.
-    chown -R user.group [directory], changes ownership of a directory
-    if a user owns a file or directory, the user can changes permissions of that file or directory.
+
+`chmod -R [file]`, changes permissions for a file or directory. 
+
+    - `r or 4`: reads a file or lists a directory
+
+    - `w or 2`: writes in a file or a directory.
+
+    - `x or 1`: executes a file or opens a directory.
+
+`chown -R user.group [directory]`, changes ownership of a directory.
+    - if a user owns a file or directory, the user can changes permissions of that file or directory.
 
 Cron Jobs
 =========

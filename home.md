@@ -99,4 +99,5 @@
     1. [VPC](aws/vpc)
     2. [EC2](aws/ec2)
 11. Kubernetes
-    1. [Helm](kubernetes/helm)
+    1. [Kubectl](kubernetes/kubectl)
+    2. [Helm](kubernetes/helm)

@@ -2,13 +2,19 @@
 
 ### K8s
 
-Kubernetes 1---\* node pools.
-Each node pool can have a different configuration.
-Worker -> Droplet without ssh access.
-DigitalOcean BlockStorage for persisten volumes.
-DigitalOcean Load Balancers to manage incoming traffic.
-Pricing: Priced by the number and capacity of the worker nodes.
-Availability: K8s is available in all regions.
+- Kubernetes 1---\* node pools.
+
+- Each node pool can have a different configuration.
+
+- Worker -> Droplet without ssh access.
+
+- DigitalOcean BlockStorage for persisten volumes.
+
+- DigitalOcean Load Balancers to manage incoming traffic.
+
+- Pricing: Priced by the number and capacity of the worker nodes.
+
+- Availability: K8s is available in all regions.
 
 Features:
 

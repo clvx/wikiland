@@ -45,11 +45,11 @@ doesn't have a resource type "<resource>", Unauthorized, or Unknown resource
 type: nodes, try downloading a new cluster configuration file. The certificates
 will be valid for one week from the time of the download.
 
-### Storage
+## Storage
 
 **TEST VOLUME LIFECYCLE WITH KUBERNETES AND WITHOUT KUBERNETES**
 
-- Block Storage is prpovision in units called volumens.
+- Block Storage is provision in units called volumens.
 
 - Volumes function as generic block devices.
 
@@ -65,3 +65,31 @@ within the same region.
 - Volumes can only be attached to one Droplet at a time.
 
 - Up to 7 volumes can be attached to a single Droplet.
+
+- Volumes are charged at a rate of $0.10 per GB per month.
+
+
+#### Storage - K8s
+
+- Create and access DigitalOcean block storage volumes by creating a PersistentVolumeClaim
+ as part of your deployment.
+
+- If a volume does not exist when creating the PersistentVolumeClaim, one will be created.
+If one already exists, then the existing volume will be mounted on the first object.
+
+- Billing for the block storage volume begins when the object is successfully created.
+
+- To end billing, you *MUST* explicitly delete the volume.
+
+- When you’ve deleted a cluster from the control panel, the volume will not be 
+automatically deleted and billing will continue. In this case, visit the control 
+panel and manually delete the block storage volume.
+
+#### Notes in storage and k8s
+
+Volumes created and attached to the droplet/worker by the Panel **ARE NOT REFLECTED**
+in the Kubernetes PersistenVolume list. The only way to create a volume for Kubernetes 
+is through the PersistenVolumeClaim Object.
+
+> DO allows to create PV and create a PVC referring that PV. However, the pv's claim
+doesn't appear listed in the volumes page.

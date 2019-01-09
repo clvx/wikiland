@@ -101,3 +101,4 @@
 11. Kubernetes
     1. [Kubectl](kubernetes/kubectl.md)
     2. [Helm](kubernetes/helm.md)
+    3. [DigitalOcean](kubernetes/digitalocean.md)

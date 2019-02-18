@@ -93,3 +93,23 @@ is through the PersistenVolumeClaim Object.
 
 > DO allows to create PV and create a PVC referring that PV. However, the pv's claim
 doesn't appear listed in the volumes page.
+
+
+
+## Load Balancer
+
+- The DigitalOcean Cloud Controller supports provisioning DigitalOcean Load 
+Balancers in a cluster’s resource configuration file.
+
+- A load balancer will be create if it doesn't exist.
+
+- Billing begins once the creation is completed.
+
+- To delete a cluster’s load balancer use kubectl. When this command is successful, 
+it both removes the load balancer from the cluster and deletes it from your account.
+
+- When you delete a cluster with a load balancer service from the control panel, 
+the load balancer is not automatically deleted. You can remove it using the control 
+plane in the Load Balancer section.
+
+

@@ -255,3 +255,137 @@ entity to which it is attached.
     - S3:
         - Use default formatting.
         - Produce aggregated logs.
+
+## Domain Name System(DNS)
+A globally distributed service that translates domain names to IP addresses.
+
+    blog.bitclvx.com.
+    .           root level domain
+    .com        top level domain
+    .bitclvx    second level domain
+    blog        subdomain of second level domain
+
+Name Servers(NS)
+Translates domain names to ip addresses. 2 kinds:
+- Authoritative: provides answers to queries they know about.
+- Non Authoratative: Points to other servers or serves cached content from other 
+name server's data.
+
+Zones
+Container that holds important information about how to route traffic for domain
+names and its subdomains.
+
+DNS Resolution
+1. Checks locally: host files, local dns.
+2. Forward request to name server.
+3. Waits for resolvers to answer query.
+    3.1 Resolver resursively resolves query until it find the authoritative 
+    server for the domain
+
+Record Types
+
+| Record | Description |
+|*|*|
+| A and AAA | Maps a host an ip address |
+| CNAME(Canonical Name Record) | defines an alias for a host |
+| NS(Name Server) | Records direct traffic to the DNS servers that contain the authoritative DNS records|
+| MX(Mail Exchange) | Records are used to define mail servers |
+| TXT(Text) | Hols text information |
+| PTR(Pointer) | Maps an IP address to a dns |
+| SOA | Start of authority |
+| SPF | Send Policy Framework |
+| CAA | Certificate authority authorization |
+| Alias | Maps AWS resources |
+
+## Route 53
+- Authoritative DNS server.
+- Provides direct updates to manage public DNS names.
+- Answers DNS queries.
+- Translates domain names to aws constructs.
+
+### Hosted Zones
+- Collection of record sets that are managed under a single domain name.
+- These record sets tell Route 53 how to respond to a DNS query.
+2 types of zones:
+- Public zones: How to route traffic from the Internet and your domain.
+- Private zones: How to route traffic within one or more VPC's. a
+    #These settings need to be enabled in the VPC:
+    enableDnsHostnames
+    enableDnsSupport
+
+## Health Checks
+Monitor resources such as web servers or email servers using alerts in cloudwatch.
+
+- If an endpoint fails, Route 53 removes the entry until the endpoint check is healthy.
+- Heal checks are not triggered by DNS queries, but are run by AWS periodically.
+
+## Routing Policies
+Determine how to respond to queries
+
+- We can set a routing policy whenever we create a record set in Route 53.
+
+| Routing Policy | Purpose |
+| * | * |
+| Simple | Default Policy |
+| Weighted | Percentage route |
+| Latency-base | Fastest connection routing |
+| Failover | One-or-the-other routing |
+| Geolocation | location-based routing |
+| Multi-value Response Routing | Responds with multiple records sets for the same query(max 8 records per request) |
+
+### Weighted Routing Policy
+- Defines a set id to identify all the records to be weighted.
+- Records sets need to have a weight.
+- The probabibility of any resource record set being called is determine by:
+    
+    weight for a specific record set / sum of weights for all record sets
+
+- It also supports health checks.
+    - The sum of weights gets recalculated when a record is removed due failing a health check.
+- If weight is set to 0, it will not be in the pool of active records.
+- If all the records are set to a weight of 0, then traffic is distributed equally 
+among all the records.
+
+### Failover Routing Policy
+- Each group needs to have their own set id.
+- Each record set needs to have health checks.
+- If both primary and secondary are unhealthy then the primary is returned, even 
+though it is unhealthy.
+- If one record set fails the health check, the other will return if it's healthy.
+
+### Geolocation Routing Policy
+
+    default:
+      North America:
+        Mexico
+        US
+          California
+          Louisiana
+      Europe:
+        UK
+        Spain
+
+- It works from the most specific location to the least specific.
+- If a health check is set up and the record set fails, it will use the most 
+specific record for that query.
+- Not having a default region allow us to lock users to a specific location.
+- The IP address is from the dns resolver not the user(unless the user uses its 
+own resolver).
+
+## Private Hosted Zones
+- Internal linked VPC's to the private hosted zone and resources will resolve
+the internal hosted zone.
+- Public dns names resolved by linked VPC's from a public hosted zone will resolve 
+to the resource public ip address because public dns names will always 
+resolve to public ip address.
+
+    TODO DIAGRAMA THIS
+
+### Spli View / Horizon DNS
+- A hosted zone which sits in the private and public hosted zones.
+    - Private clients will resolve internal IP's.
+    - Public clients will resolve public IP's.
+
+
+
+
